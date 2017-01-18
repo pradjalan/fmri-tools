@@ -1,0 +1,50 @@
+matlab -nodesktop -nodisplay -nosplash -r "run('/mnt/project1/rawData/fMRI/incoming/BrainScape_fBIRN/NKI-RS-Lite/COINS/Code/Dixit/cerebrum_run.m'); run_cc(preprocessed_data_dir,[filelists,'alcohol_all_scan_directories_2500.txt'],'LeftAmygdala',10,50,[ccmap_dir,'DMN_all_new/preProcessedwithSliceTimingsFile/'],[logfolder,'cc_map/DMN_all_healthy/3_50/all_alcohol_2500.txt']) "
+
+matlab -nodesktop -nodisplay -nosplash -r "run('/mnt/project1/rawData/fMRI/incoming/BrainScape_fBIRN/NKI-RS-Lite/COINS/Code/Dixit/cerebrum_run.m'); hypothesis_T_test_2([ccmap_dir,'DMN_all_new/preProcessedwithSliceTimingsFile/'],[filelists,'healthy_subjects_adults_scan_directories_2500.txt'],'Avg_CC_map_std',50,[htest_dir,'/DMN_all_healthy_adults_2500_new/'] )";
+
+matlab -nodesktop -nodisplay -nosplash -r "run('/mnt/project1/rawData/fMRI/incoming/BrainScape_fBIRN/NKI-RS-Lite/COINS/Code/Dixit/cerebrum_run.m'); run_cc(preprocessed_data_dir,[filelists,'healthy_subjects_adults_scan_directories_2500.txt'],'LeftAccumbens',11,50,[ccmap_dir,'DMN_all_new/preProcessedwithSliceTimingsFile/'],[logfolder,'cc_map/DMN_all_healthy/3_50/all_healthy_leftaccumbens_2500.txt']) "
+
+matlab -nodesktop -nodisplay -nosplash -r "run('/mnt/project1/rawData/fMRI/incoming/BrainScape_fBIRN/NKI-RS-Lite/COINS/Code/Dixit/cerebrum_run.m'); run_cc_1(preprocessed_data_dir,[filelists,'healthy_subjects_adults_scan_directories_2500.txt'],'mPFC',25,50,[ccmap_dir,'DMN_all_new/preProcessedwithSliceTimingsFile/'],[logfolder,'cc_map/DMN_all_healthy/3_50/all_healthy_mpfc_2500.txt']) "
+
+
+matlab -nodesktop -nodisplay -nosplash -r "run('/mnt/project1/rawData/fMRI/incoming/BrainScape_fBIRN/NKI-RS-Lite/COINS/Code/Dixit/cerebrum_run.m'); run_cc(preprocessed_data_dir,[filelists,'healthy_subjects_adults_scan_directories_2500.txt'],'LeftAccumbens',11,atlas_sub,50,[ccmap_dir,'DMN_all_new/preProcessedwithSliceTimingsFile/'],[logfolder,'cc_map/DMN_all_healthy/3_50/all_healthy_leftaccumbens_2500.txt']) "
+
+
+matlab -nodesktop -nodisplay -nosplash -r "run('/mnt/project1/rawData/fMRI/incoming/BrainScape_fBIRN/NKI-RS-Lite/COINS/Code/Dixit/cerebrum_run.m'); hypothesis_T_test_2([ccmap_dir,'DMN_all_new/preProcessedwithSliceTimingsFile/'],[filelists,'healthy_subjects_adults_scan_directories_2500.txt'],'Avg_CC_map_std',50,[htest_dir,'/healthy_2500/'] )";
+
+
+matlab -nodesktop -nodisplay -nosplash -r "run('/mnt/project1/rawData/fMRI/incoming/BrainScape_fBIRN/NKI-RS-Lite/COINS/Code/Dixit/cerebrum_run.m'); run_cc(preprocessed_data_dir,[filelists,'healthy_subjects_adults_scan_directories_1400.txt'],rois,10,atlas_sub,50,[ccmap_dir,'DMN_all_new/preProcessedwithSliceTimingsFile/'],[logfolder,'cc_map/DMN_all_healthy/3_50/all_healthy_leftamygdala_1400.txt']) "
+
+
+matlab -nodesktop -nodisplay -nosplash -r "run('/mnt/project1/rawData/fMRI/incoming/BrainScape_fBIRN/NKI-RS-Lite/COINS/Code/Dixit/cerebrum_run.m'); run_cc(preprocessed_data_dir,[filelists,'alcohol_all_scan_directories_2500.txt'],'LeftAmygdala',10,atlas_sub,50,[ccmap_dir,'DMN_all_new/preProcessedwithSliceTimingsFile/'],[logfolder,'cc_map/DMN_all_healthy/3_50/all_alcohol_leftamygdala_2500.txt']) "
+
+matlab -nodesktop -nodisplay -nosplash -r "run('/mnt/project1/rawData/fMRI/incoming/BrainScape_fBIRN/NKI-RS-Lite/COINS/Code/Dixit/cerebrum_run.m'); two_sided_t_test([htest_dir, 'healthy_2500'],[htest_dir, '/alcoholics_2500/'],'mPFC PCC RightAmygdala',50,'/mnt/project1/TwoSided_T_Tests/healthyVSalcohol_2500/'); "
+
+
+matlab -nodesktop -nodisplay -nosplash -r "run('/mnt/project1/rawData/fMRI/incoming/BrainScape_fBIRN/NKI-RS-Lite/COINS/Code/Dixit/cerebrum_run.m'); hypothesis_T_test_2([ccmap_dir,'DMN_all_new/preProcessedwithSliceTimingsFile/'],[filelists,'alcohol_dependence_past_scan_directories_2500.txt'],rois,50,[htest_dir,'/alcohol_dependence_past_2500/'] );"
+
+
+matlab -nodesktop -nodisplay -nosplash -r "run('/mnt/project1/rawData/fMRI/incoming/BrainScape_fBIRN/NKI-RS-Lite/COINS/Code/Dixit/cerebrum_run.m'); two_sided_t_test([htest_dir, '/healthy_2500/'],[htest_dir, '/alcohol_dependence_past_2500/'],rois,50,'/mnt/project1/TwoSided_T_Tests/healthyVSalcoholDependencePast_2500/'); "
+
+matlab -nodesktop -nodisplay -nosplash -r "run('/mnt/project1/rawData/fMRI/incoming/BrainScape_fBIRN/NKI-RS-Lite/COINS/Code/Dixit/cerebrum_run.m'); determine_rois('/mnt/project1/TwoSided_T_Tests/healthyVSalcohol_2500/',rois,50); "
+
+matlab -nodesktop -nodisplay -nosplash -r "run('/mnt/project1/rawData/fMRI/incoming/BrainScape_fBIRN/NKI-RS-Lite/COINS/Code/Dixit/striatum_run.m'); determine_rois('/mnt/project1/TwoSided_T_Tests/healthyVSalcohol_2500/',rois,50); "
+
+
+matlab -nodesktop -nodisplay -nosplash -r "run('/mnt/project1/rawData/fMRI/incoming/BrainScape_fBIRN/NKI-RS-Lite/COINS/Code/Dixit/striatum_run.m'); fdr_correction([htest_dir,'/DMN_all_healthy_adults_2500_correct/p_value_merged_cc_maps_Avg_CC_map_std.nii.gz'],0.05,[empty_dir,'/fdr_test/']) "
+
+
+rois = 'mPFC PCC RightAmygdala LeftAmygdala LeftAccumbens RightAccumbens';
+
+filelists = '/mnt/project1/rawData/fMRI/incoming/BrainScape_fBIRN/NKI-RS-Lite/COINS/Filelists/';
+logfolder = '/mnt/project1/rawData/fMRI/incoming/BrainScape_fBIRN/NKI-RS-Lite/COINS/CodeResults/logs/';
+preprocessed_data_dir = '/mnt/project1/preProcessedData/COINS/withSliceTimingsFile/';
+htest_dir = '/mnt/project1/Htests/';
+ccmap_dir = '/mnt/project1/CC_maps/COINS/';
+atlas_sub = ['${FSLDIR}//data/atlases/HarvardOxford/HarvardOxford-sub-maxprob-thr50-2mm.nii.gz'];
+atlas_cort = ['${FSLDIR}//data/atlases/HarvardOxford/HarvardOxford-cort-maxprob-thr50-2mm.nii.gz'];
+empty_dir = '/mnt/project1/rawData/fMRI/incoming/BrainScape_fBIRN/NKI-RS-Lite/COINS/empty/'
+
+
+PCC=30
+
