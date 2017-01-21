@@ -15,8 +15,6 @@ function fdr_correction_3(p_file,t_file,mask_file, out_file_path)
 fsldir = getenv('FSLDIR');
 
 p_map_nii=load_untouch_nii(p_file);
-
-
 p_map_img=p_map_nii.img; %seperating img file from nii file
 
 
@@ -43,11 +41,12 @@ p_values=p_map_img(mask_indices); %extracting p_values of brain only (i.e. exclu
 sign_mask = sign(p_values);
 
 
-
+p_val_mask=p_values; p_val_mask(:)=0;
 [sorted_p_values,sorted_p_indices] = sort(abs(p_values),'ascend');
 
 q_star_values = zeros(size(sorted_p_values));
 rejected = zeros(size(sorted_p_values));
+
 
 
 LENGTH=length(sorted_p_values);
@@ -79,20 +78,20 @@ for i=abs(-length(sorted_p_values):-1)
 end
 
 
+
+
 %Consider Rejected Hypothesis
 rejected_indices = find(rejected);
 
-p_val_mapped_on_brain=zeros(size(p_values));
-p_val_mapped_on_brain(:) = inf;
+p_val_mapped_on_brain=p_val_mask;
 p_val_mapped_on_brain(sorted_p_indices(rejected_indices)) = sorted_p_values(rejected_indices);
 
 q_star(sorted_p_indices) = q_star_values;
 
 
 %Create Mask of p-values with rejected hypothesis i.e. a mask of selected p-values
-selected_p_values = false(size(mask_indices));
+selected_p_values = zeros(length(p_val_mapped_on_brain));
 selected_p_values(sorted_p_indices(rejected_indices)) = 1;
-
 
 
 %Preserve the negative sign for negative p-values
@@ -103,7 +102,7 @@ q_star = sign_mask.*q_star.';
 % Write FDR Corrected p-Values and q-Values to output files
 std_mask_img(mask_indices)=p_val_mapped_on_brain;
 fdr_corr_nii.img=std_mask_img; fdr_corr_nii.hdr=p_map_nii.hdr;
-save_nii(fdr_corr_nii,[out_dir '/fdr_p_values_' out_file_name]);
+save_nii(fdr_corr_nii,[out_dir '/fdr_p_values' out_file_name]);
 
 std_mask_img(mask_indices)=q_star;
 q_fdr_nii.img = std_mask_img; q_fdr_nii.hdr = p_map_nii.hdr;
@@ -115,8 +114,10 @@ save_nii(fdr_mask_nii,[out_dir '/fdr_mask_' out_file_name]);
 
 %Apply Mask to the t-values
 if length(t_file)~=0
-    ApplyMask = ['sh -c ". ${FSLDIR}/etc/fslconf/fsl.sh;${FSLDIR}/bin/fslmaths ',t_file,' -mul ',out_dir,'/fdr_mask_',out_file_name,'  ',out_dir,'/fdr_t_values_',out_file_name,'  "'];
+    ApplyMask = ['sh -c ". ${FSLDIR}/etc/fslconf/fsl.sh;${FSLDIR}/bin/fslmaths ',t_fileLoc,' -mul ',out_dir,'/fdr_mask_',out_file_name,'  ',out_dir,'/fdr__',out_file_name,'  "'];
     sam = system(ApplyMask);
-end
+end    
+    
+
 
 disp(['Saved FDR corrected files in: ',out_dir])

@@ -6,8 +6,8 @@ for tn = 1:length(tom)
 
     ROIs = strsplit(ROI_names);
     for rn=1:length(ROIs)
+
         ROI_name = char(ROIs(rn));
-        disp(['Type of Map: ' type_of_map ';  ROI: ' ROI_name]);
         % type_of_map = Avg_CC_map_std | AvgofMax_CC_map_std | Max_CC_map_std
         fsldir = getenv('FSLDIR');
         file_suffix = [num2str(atlas_threshold),'_atlas','_',ROI_name];
@@ -49,11 +49,10 @@ for tn = 1:length(tom)
         out_file_name_stddev=['stddev_' name extension];
 
         %% Mean and standard deviation of each voxel across all subjects
-        disp('Loading Merged Correlation Maps..');
+        
         CC_map_4D=load_untouch_nii(file_name);
         CC_map_4D_img=CC_map_4D.img;
 
-        disp('Creating Brain Mask Variables..');
         std_mask=load_untouch_nii([fsldir,'/data/standard/MNI152_T1_2mm_brain_mask.nii.gz']);
         std_mask_img=std_mask.img;
         std_mask.hdr.dime.datatype=16; % change header file to use this header for saving T_value in nii format
@@ -66,7 +65,7 @@ for tn = 1:length(tom)
         mask_xyz=[mask_x mask_y mask_z]; 
 
         %% Hypothesis test        
-        disp('Calculating Test Statistics of each voxel across subjects..');
+        disp('Calculating Mean, standard deviation of each voxel across all subjects..');
         Mean_CC_map=zeros(dim_mask_img); Std_dev_CC_map=zeros(dim_mask_img); T_value_CC_map=zeros(dim_mask_img);
         p_CC_map=zeros(dim_mask_img); %ci_CC_map=zeros(dim_mask_img); stats_CC_map=zeros(dim_mask_img); h_CC_map=zeros(dim_mask_img);
 
@@ -84,18 +83,12 @@ for tn = 1:length(tom)
         % (sample_mean-0)/(std_dev/sqrt(no. of subjects)) [it will give t values of each voxels across all subjects]
         %% save file
 
-        
-        
-        
-        disp('Saving Results..');
-        % NOTE: Signs are applied to p-values using the t-value matrix
-        
         nii_T_value_CC_map.hdr=std_mask.hdr; nii_T_value_CC_map.img=T_value_CC_map; save_nii(nii_T_value_CC_map,[out_dir,'/',out_file_name_T]); %%%% changes to be made in this line
-        nii_p_value_CC_map.hdr=std_mask.hdr; nii_p_value_CC_map.img=sign(T_value_CC_map).*abs(p_CC_map); save_nii(nii_p_value_CC_map,[out_dir,'/',out_file_name_p]);
+        nii_p_value_CC_map.hdr=std_mask.hdr; nii_p_value_CC_map.img=p_CC_map; save_nii(nii_p_value_CC_map,[out_dir,'/',out_file_name_p]);
         disp(['T_value map & p_value map saved in nii format at ',out_dir])
 
         
-        p_CC_map = sign(T_value_CC_map).*(-log10(abs(p_CC_map)));
+        p_CC_map = sign(p_CC_map).*(-log10(abs(p_CC_map)));
         nii_log_p_value_CC_map.hdr=std_mask.hdr; nii_log_p_value_CC_map.img=p_CC_map; save_nii(nii_log_p_value_CC_map,[out_dir,'/log_',out_file_name_p]);
         disp(['log p_value map saved in nii format at ',out_dir])
         
