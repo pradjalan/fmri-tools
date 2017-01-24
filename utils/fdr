@@ -61,7 +61,7 @@ if length(output_index)~=0
 endif
 
 
-
+fdr(input_file, '', mask_file, output_file);
 
 
 
