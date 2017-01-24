@@ -1,6 +1,6 @@
 addpath('~/Public_writable/MATLAB/NIfTI_20140122/');
 addpath('~/Public_writable/MATLAB/');
-addpath('/mnt/project1/home1/cs5120287/git/mycode/Code/Dixit/');
+% addpath('/mnt/project1/home1/cs5120287/git/mycode/Code/Dixit/');
 setenv('FSLDIR','/usr/share/fsl/5.0/');
 fsldir = '/usr/share/fsl/5.0/';
 
