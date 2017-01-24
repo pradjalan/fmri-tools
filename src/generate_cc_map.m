@@ -1,30 +1,27 @@
 
 
-function [Std_CC_Avg_img,Std_CC_Max_img,Std_CC_AvgofMax_img]=generate_cc_map(feat_loc,ROI_name,mask_threshold,type_of_map,output_dir_base)
+function [Std_CC_Avg_img,Std_CC_Max_img,Std_CC_AvgofMax_img]=generate_cc_map_3(feat_loc,ROI_name,mask_threshold,atlas_threshold,type_of_map,output_dir_base)
 % feat_loc: Location of feat folder containing functional data and ROI files
 % ROI_name: ROI_name, to be appended with output files.
 % mask_threshold: Intensity value in the atlas corresponding to ROI
 % atlas_threshold: Probability threshold to be used in Harvard-Oxford Atlas
 % type_of_map: array containing any of 1,2,3 for specifying type of map to be generated as Average, Max, Avgerage of top 10% respectively
-% output_dir_base: Output directory. Output files will be written into a new folder named as per mask_threshold and ROI
+% output_dir_base: Output directory. Output files will be written into a new folder named as per atlas threshold and ROI
 
 
 disp('Loadind Files for Corelations...');
 tic
-ROI_dir_name=[feat_loc,'/',ROI_name,'_', num2str(mask_threshold)];
+ROI_dir_name=[feat_loc,'/',ROI_name,'_',num2str(atlas_threshold),'_', num2str(mask_threshold)];
 % NOTE: the same suffix is used for reading correlation files in the t-test code.
-file_suffix = [ROI_name];
+file_suffix = [num2str(atlas_threshold),'_atlas','_',ROI_name];
 output_dir = [output_dir_base,'/',file_suffix,'/'];
 system(['mkdir -p ',output_dir]);
 
-%% Load Input Data
-
-% Load the resting state data
+%% Input Data
 RS=load_untouch_nii([feat_loc,'/filtered_func_data.nii.gz']); %load nifti file of preprocessed functional data
 RS_size=size(RS.img);
 RS_masked=load_untouch_nii([ROI_dir_name,'/filtered_func_ROI_masked.nii.gz']); %load masked 4D functional data
 
-% Load ROI data
 ROI_MASK=load_untouch_nii([ROI_dir_name,'/ROI_xfmed_mask.nii.gz']); %load transformed mask of ROI
 ROI_MASK_img=ROI_MASK.img;
 ROI_MASK_size = size(ROI_MASK_img);
@@ -66,6 +63,9 @@ CORR = (ROI_data*(RS_data.')) / (RS_size(4)-1) ;
 
 %% Avg and Max of Correlation Coef.'s (CC) and of Squareroot of CC's of all ROI voxel's and their mapping
 disp('Reducing ROI Corelation Values..');
+% RS_MASK_xyzT=RS_MASK_xyz';
+
+
 
  %for avg map
 if isempty(find(type_of_map==1,1))==0

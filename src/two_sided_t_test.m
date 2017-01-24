@@ -1,4 +1,4 @@
-function two_sided_t_test(group1_rootdir,group2_rootdir,ROI_names,output_dir_base)
+function two_sided_t_test(group1_rootdir,group2_rootdir,ROI_names,atlas_threshold,output_dir_base)
 
 types_of_map = strsplit('Avg_CC_map_std AvgofMax_CC_map_std Max_CC_map_std');
 ROIs = strsplit(ROI_names);
@@ -9,7 +9,7 @@ for tn=1:length(types_of_map)
         disp(ROI_name);
         disp(type_of_map);
         fsldir = getenv('FSLDIR');
-        file_suffix = [ROI_name];
+        file_suffix = [num2str(atlas_threshold),'_atlas','_',ROI_name];
         group1_dir = [group1_rootdir,'/',file_suffix,'/'];
         group2_dir = [group2_rootdir,'/',file_suffix,'/'];
         out_dir = [output_dir_base '/' file_suffix '/'];

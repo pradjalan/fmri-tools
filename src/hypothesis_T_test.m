@@ -1,7 +1,6 @@
-function hypothesis_T_test(input_dir_base,cc_folder_list,ROI_names,output_dir_base)
-
-
+function hypothesis_T_test_2(input_dir_base,cc_folder_list,ROI_names,atlas_threshold,output_dir_base)
 tom = strsplit('Avg_CC_map_std AvgofMax_CC_map_std Max_CC_map_std');
+% tom = strsplit(types_of_map);
 for tn = 1:length(tom)
     type_of_map = char(tom(tn));
 
@@ -11,7 +10,7 @@ for tn = 1:length(tom)
         disp(['Type of Map: ' type_of_map ';  ROI: ' ROI_name]);
         % type_of_map = Avg_CC_map_std | AvgofMax_CC_map_std | Max_CC_map_std
         fsldir = getenv('FSLDIR');
-        file_suffix = [ROI_name];
+        file_suffix = [num2str(atlas_threshold),'_atlas','_',ROI_name];
         out_dir = [output_dir_base,'/',file_suffix,'/'];
         system(['mkdir -p ',out_dir]);
         
