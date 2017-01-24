@@ -1,4 +1,5 @@
 function fdr(p_file,t_file,mask_file, out_file_path)
+
 % This Code is a part of the fmri-tools utilities
 
 % fdr_correction(p_fileLoc,q_value,out_dir)
@@ -93,12 +94,9 @@ q_star(sorted_p_indices) = q_star_values;
 selected_p_values = false(size(mask_indices));
 selected_p_values(sorted_p_indices(rejected_indices)) = 1;
 
-
-
 %Preserve the negative sign for negative p-values
 p_val_mapped_on_brain = sign_mask.*p_val_mapped_on_brain;
 q_star = sign_mask.*q_star.';
-
 
 % Write FDR Corrected p-Values and q-Values to output files
 std_mask_img(mask_indices)=p_val_mapped_on_brain;
