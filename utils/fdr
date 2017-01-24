@@ -1,7 +1,8 @@
 #! /usr/bin/octave -q
 
 
-addpath(getenv('CCTDIR'));
+cctd = getenv('CCTDIR')
+addpath([cctd '/src/']);
 set_config
 
 usage_message = 'Usage: fdr <input file> [--mask <mask file>] [--vol or -v <volume number>] [-o <output file>]';
