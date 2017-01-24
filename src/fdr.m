@@ -1,4 +1,4 @@
-function fdr_correction_3(p_file,t_file,mask_file, out_file_path)
+function fdr(p_file,t_file,mask_file, out_file_path)
 % This Code is a part of the fmri-tools utilities
 
 % fdr_correction(p_fileLoc,q_value,out_dir)
