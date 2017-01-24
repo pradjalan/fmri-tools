@@ -1,6 +1,7 @@
 #! /usr/bin/octave -q
 
 
+
 cctd = getenv('CCTDIR')
 addpath([cctd '/src/']);
 set_config
