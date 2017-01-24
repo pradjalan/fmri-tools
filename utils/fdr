@@ -2,7 +2,7 @@
 
 
 addpath(getenv('CCTDIR'));
-set_config;
+set_config
 
 usage_message = 'Usage: fdr <input file> [--mask <mask file>] [--vol or -v <volume number>] [-o <output file>]';
 help_message = 'Use --help for help options.'
