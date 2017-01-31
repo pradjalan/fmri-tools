@@ -1,4 +1,4 @@
-function [status]=bet_and_flirt_3(feat_loc,ROI_name,mask_threshold,atlas,output_dir)
+function [status]=roi_extraction(feat_loc,ROI_name,mask_threshold,atlas,output_dir)
 
 % feat_loc : location of feat directory 
 %
@@ -25,6 +25,7 @@ else
     ROI_dir_name = output_dir;
 end
 
+    
 
 
 
