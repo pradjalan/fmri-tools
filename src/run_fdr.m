@@ -37,7 +37,7 @@ function run_fdr(input_dir_base,ROI_names,mask_file,output_dir_base)
         ROIs = strsplit(ROI_names);
             for rn=1:length(ROIs)
                 ROI_name = char(ROIs(rn));
-                roi_extraction(feat_loc,ROI_name,mask_threshold,atlas,'');
+                
                 
                 %Copy the Directory Structure of Pre-Processed Data
                 output_dir = strcat(output_dir_base,'/',ROI_name);
