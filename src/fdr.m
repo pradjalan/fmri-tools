@@ -88,14 +88,14 @@ p_val_mapped_on_brain(:) = 0;
 p_val_mapped_on_brain(sorted_p_indices(rejected_indices)) = sorted_p_values(rejected_indices);
 
 q_star(sorted_p_indices) = q_star_values;
-disp(['Voxels with Non-Zero Correlation: ' 100*num2str(length(find(abs(q_star)>2))/length(mask_indices)) '%']);
+disp(['Voxels with Non-Zero Correlation: ' num2str(100*length(find(abs(q_star)>2))/length(mask_indices)) '%']);
 
 
 %Create Mask of p-values with rejected hypothesis i.e. a mask of selected p-values
 selected_p_values = false(size(mask_indices));
 selected_p_values(sorted_p_indices(rejected_indices)) = 1;
 
-disp(['Voxels with Non-Zero Correlation (rejected hypothesis): ' 100*num2str(length(find(selected_p_values))/length(mask_indices)) '%']);
+disp(['Voxels with Non-Zero Correlation (rejected hypothesis): ' num2str(100*length(find(selected_p_values))/length(mask_indices)) '%']);
 
 
 %Preserve the negative sign for negative p-values
