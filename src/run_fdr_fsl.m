@@ -1,4 +1,4 @@
-function run_fdr(input_dir_base,ROI_names,mask_file,mode,output_dir_base)
+function run_fdr(input_dir_base,ROI_names,mask_file,output_dir_base)
 % Runs the ROI Extraction and Correlation Analysis Code (generate_cc_map) for a given list of feat directories
 
 % input_dir_base : Directory containing the data for all scans
@@ -42,10 +42,11 @@ function run_fdr(input_dir_base,ROI_names,mask_file,mode,output_dir_base)
                 output_dir = strcat(output_dir_base,'/',ROI_name);
                 input_dir = strcat(input_dir_base,'/',ROI_name);
                 system(['mkdir -p ',output_dir]);
-                p_file = [input_dir '/log_p_value_' file_base];
-                t_file = [input_dir '/T_value_' file_base];
-                out_file = [output_dir '/' ROI_name '_' type_of_map '.nii.gz'];
-                fdr(p_file,t_file,mask_file, out_file);
+                p_file = [input_dir '/log_p_value_' file_base];               
+                out_file = [output_dir '/fslfdr_' ROI_name '_' type_of_map '.nii.gz'];
+                fdr_command = ['fdr -i ' p_file ' -m ' mask_file ' -q 0.01 ' ' --conservative -a ' out_file];
+                [s,c] = system(fdr_command);
+               
                 
                 
             end
