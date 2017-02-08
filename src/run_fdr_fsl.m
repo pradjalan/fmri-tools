@@ -22,6 +22,8 @@ function run_fdr_fsl(input_dir_base,ROI_names,mask_file,output_dir_base)
 % per the conventions in the previous codes (roi_extraction.m and
 % genereate_cc_map.m
     
+    fsldir = getenv('FSLDIR');
+
     if length(output_dir_base)==0
         output_dir_base = input_dir_base;
     end
