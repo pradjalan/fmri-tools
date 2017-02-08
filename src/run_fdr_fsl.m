@@ -30,6 +30,10 @@ function run_fdr_fsl(input_dir_base,ROI_names,mask_file,output_dir_base)
     [s,c] = system(['mkdir -p ',output_dir_base]);
     end
     
+    if length(mask_file)==0
+        mask_file = [fsldir,'/data/standard/MNI152_T1_2mm_brain_mask.nii.gz'];    
+    end     
+
     tom = strsplit('Avg_CC_map_std AvgofMax_CC_map_std Max_CC_map_std');
     for tn = 1:length(tom)
         type_of_map = char(tom(tn));
