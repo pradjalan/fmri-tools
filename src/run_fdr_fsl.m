@@ -1,4 +1,4 @@
-function run_fdr(input_dir_base,ROI_names,mask_file,output_dir_base)
+function run_fdr_fsl(input_dir_base,ROI_names,mask_file,output_dir_base)
 % Runs the ROI Extraction and Correlation Analysis Code (generate_cc_map) for a given list of feat directories
 
 % input_dir_base : Directory containing the data for all scans
