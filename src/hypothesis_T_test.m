@@ -91,12 +91,14 @@ for tn = 1:length(tom)
         disp('Saving Results..');
         % NOTE: Signs are applied to p-values using the t-value matrix
         
+        pseudo_zero = realmin('double');
+        p_CC_map(find(p_CC_map < pseudo_zero)) = pseudo_zero;
+        
         nii_T_value_CC_map.hdr=std_mask.hdr; nii_T_value_CC_map.img=T_value_CC_map; save_nii(nii_T_value_CC_map,[out_dir,'/',out_file_name_T]); %%%% changes to be made in this line
         nii_p_value_CC_map.hdr=std_mask.hdr; nii_p_value_CC_map.img=sign(T_value_CC_map).*abs(p_CC_map); save_nii(nii_p_value_CC_map,[out_dir,'/',out_file_name_p]);
         disp(['T_value map & p_value map saved in nii format at ',out_dir])
 
-        pseudo_zero = realmin('double');
-        p_CC_map(find(p_CC_map < pseudo_zero)) = pseudo_zero;
+        
         p_CC_map = sign(T_value_CC_map).*(-log10(abs(p_CC_map)));
         nii_log_p_value_CC_map.hdr=std_mask.hdr; nii_log_p_value_CC_map.img=p_CC_map; save_nii(nii_log_p_value_CC_map,[out_dir,'/log_',out_file_name_p]);
         disp(['log p_value map saved in nii format at ',out_dir])
