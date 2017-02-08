@@ -44,7 +44,7 @@ function run_fdr(input_dir_base,ROI_names,mask_file,output_dir_base)
                 system(['mkdir -p ',output_dir]);
                 p_file = [input_dir '/log_p_value_' file_base];
                 t_file = [input_dir '/T_value_' file_base];
-                out_file = [output_dir '/' ROI_name '_' type_of_map];
+                out_file = [output_dir '/' ROI_name '_' type_of_map '.nii.gz'];
                 fdr(p_file,t_file,mask_file, out_file);
                 
                 
