@@ -50,6 +50,7 @@ function run_cc(input_dir_base,feat_dir_list,ROI_names,mask_thresholds,atlas,out
                 ROI_name = char(ROIs(rn));
                 mask_threshold = mask_thresholds(rn);
                 feat_loc = strcat(scan_loc,'/rest.feat/');
+                disp(['ROI_NAME: ' ROI_name]);
                 fprintf(logfile,'\nExtracting ROIs..');
                 roi_extraction(feat_loc,ROI_name,mask_threshold,atlas,'');
                 fprintf(logfile,'\nFinding Corelation Maps..');
