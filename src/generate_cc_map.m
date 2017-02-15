@@ -43,6 +43,21 @@ RS_data = zeros(length(RS_MASK_indices),RS_size(4));
 RS_data = old_RS_data(RS_MASK_indices,:);
 
 
+
+
+%normalise
+RS_data = zscore(RS_data,0,2);
+
+
+% Removing the Global Signal
+global_signal = nanmean(RS_data,2);
+global_component = (global_signal*RS_data.')/(global_signal.'*global_signal) ;
+RS_data = RS_data - global_component.'*global_signal;
+
+%normalise again
+RS_data = zscore(RS_data,0,2);
+
+% Create Time Series Matrix for ROI
 ROI_indices = find(ROI_MASK_img);
 [ROI_x ROI_y ROI_z] =  ind2sub(ROI_MASK_size, ROI_indices);
 ROI_data = zeros(length(ROI_indices),RS_size(4));
@@ -56,8 +71,12 @@ if isempty(ROI_indices)==0 %i.e. if not empty
 %% correlation coefficient (CC) of each ROI voxel correspong to each RS voxel
 disp('Finding Corelations..');
 
-ROI_data = zscore(ROI_data,0,2);
-RS_data = zscore(RS_data,0,2);
+
+
+
+
+
+
 
 CORR = (ROI_data*(RS_data.')) / (RS_size(4)-1) ;
 
