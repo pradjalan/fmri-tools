@@ -46,11 +46,14 @@ RS_data = old_RS_data(RS_MASK_indices,:);
 
 
 %normalise
+disp('Normalising Data..');
 RS_data = zscore(RS_data,0,2);
 
 
-% Removing the Global Signal
+disp(' Removing the Global Signal..')
+size(RS_data)
 global_signal = nanmean(RS_data,1);
+size(global_signal)
 global_component = (global_signal*RS_data.')/(global_signal.'*global_signal) ;
 RS_data = RS_data - global_component.'*global_signal;
 
