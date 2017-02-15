@@ -50,7 +50,7 @@ RS_data = zscore(RS_data,0,2);
 
 
 % Removing the Global Signal
-global_signal = nanmean(RS_data,2);
+global_signal = nanmean(RS_data,1);
 global_component = (global_signal*RS_data.')/(global_signal.'*global_signal) ;
 RS_data = RS_data - global_component.'*global_signal;
 
