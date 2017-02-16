@@ -1,7 +1,7 @@
 function hypothesis_T_test(input_dir_base,cc_folder_list,ROI_names,output_dir_base)
 
 
-tom = strsplit('Avg_CC_map_std AvgofMax_CC_map_std Max_CC_map_std');
+tom = strsplit('Avg_CC_map_std');
 for tn = 1:length(tom)
     type_of_map = char(tom(tn));
 
