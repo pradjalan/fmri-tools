@@ -33,7 +33,7 @@ end
  reorient = ['sh -c ". ${FSLDIR}/etc/fslconf/fsl.sh;${FSLDIR}/bin/fslreorient2std ', feat_loc, '/reg/highres.nii.gz ', feat_loc, '/reg/highres_reoriented.nii.gz "'];
  [status1]=system(reorient);
 
-% Functional Image to Standard Domain. Save the Transformation Matrix for later. 
+% Functional Image to Structural Domain. Save the Transformation Matrix for later. 
  Func2High=['sh -c ". ${FSLDIR}/etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',feat_loc,'/filtered_func_data.nii.gz',' -ref ',feat_loc,'/reg/highres_reoriented.nii.gz',' -omat ',ROI_dir_name,'/filtered_func2highres_brain.mat"'];
  [status2]=system(Func2High);
  

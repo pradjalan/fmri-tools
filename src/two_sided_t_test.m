@@ -88,13 +88,15 @@ for tn=1:length(types_of_map)
 
         % (sample_mean-0)/(std_dev/sqrt(no. of subjects)) [it will give t values of each voxels across all subjects]
         %% save file
-        disp([out_dir,'/',out_file_name_T]);
-        nii_T_value_CC_map.hdr=std_mask.hdr; nii_T_value_CC_map.img=T_value_CC_map; save_nii(nii_T_value_CC_map,[out_dir,'/',out_file_name_T]); %%%% changes to be made in this line
-        nii_p_value_CC_map.hdr=std_mask.hdr; nii_p_value_CC_map.img=p_CC_map; save_nii(nii_p_value_CC_map,[out_dir,'/',out_file_name_p]);
-        disp(['T_value and p_value map saved in nii format at: ',out_dir])
-
+        
         pseudo_zero = realmin('double');
         p_CC_map(find(p_CC_map < pseudo_zero)) = pseudo_zero;
+        
+        disp([out_dir,'/',out_file_name_T]);
+        nii_T_value_CC_map.hdr=std_mask.hdr; nii_T_value_CC_map.img=T_value_CC_map; save_nii(nii_T_value_CC_map,[out_dir,'/',out_file_name_T]); %%%% changes to be made in this line
+        nii_p_value_CC_map.hdr=std_mask.hdr; nii_p_value_CC_map.img=sign(T_value_CC_map).*abs(p_CC_map); save_nii(nii_p_value_CC_map,[out_dir,'/',out_file_name_p]);
+        disp(['T_value and p_value map saved in nii format at: ',out_dir])
+
         p_CC_map = sign(T_value_CC_map).*(-log10(abs(p_CC_map)));
         nii_log_p_value_CC_map.hdr=std_mask.hdr; nii_log_p_value_CC_map.img=p_CC_map; save_nii(nii_log_p_value_CC_map,[out_dir,'/log_',out_file_name_p]);
         disp(['log p_value map saved in nii format at ',out_dir])
