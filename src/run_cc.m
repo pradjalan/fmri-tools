@@ -37,10 +37,15 @@ function run_cc(input_dir_base,feat_dir_list,ROI_names,mask_thresholds,atlas,out
         atlas = ['${FSLDIR}//data/atlases/HarvardOxford/HarvardOxford-cort-maxprob-thr50-2mm.nii.gz'];
     end
     
+    ROIs = strsplit(ROI_names);
+    
+    [st,num_lines] = system(['cat ' feat_dir_list ' | wc -l ' ]);
+    num_lines = str2num(num_lines);
     fid = fopen(feat_dir_list);
     fline = fgetl(fid);
-    num_scans = 0;
-    while ischar(fline)
+    
+    parfor cur_line=1:num_lines
+%     while ischar(fline)
         scan_loc = strcat(input_dir_base,'/',fline)
         fprintf(logfile,strcat('\nDoing Scan: ',scan_loc));
         [s,c] = system(['ls -la ',scan_loc]);
@@ -49,7 +54,7 @@ function run_cc(input_dir_base,feat_dir_list,ROI_names,mask_thresholds,atlas,out
             feat_loc = strcat(scan_loc,'/.feat/');
             create_transformations(feat_loc);
             
-            ROIs = strsplit(ROI_names);
+            
             for rn=1:length(ROIs)
                 ROI_name = char(ROIs(rn));
                 mask_threshold = mask_thresholds(rn);
@@ -65,8 +70,7 @@ function run_cc(input_dir_base,feat_dir_list,ROI_names,mask_thresholds,atlas,out
                 output_dir = strcat(output_dir_base,'/',fline);
                 system(['mkdir -p ',output_dir]);
                 generate_cc_map(feat_loc,ROI_name,mask_threshold,[1],output_dir);
-                num_scans = num_scans + 1;
-                fprintf(logfile,strcat('\nScans Completed:',num2str(num_scans)) );
+                
             end
         end
         fline = fgetl(fid);
