@@ -39,13 +39,18 @@ function run_cc(input_dir_base,feat_dir_list,ROI_names,mask_thresholds,atlas,out
     
     ROIs = strsplit(ROI_names);
     
-    [st,num_lines] = system(['cat ' feat_dir_list ' | wc -l ' ]);
-    num_lines = str2num(num_lines);
-    fid = fopen(feat_dir_list);
-    fline = fgetl(fid);
+%     [st,num_lines] = system(['cat ' feat_dir_list ' | wc -l ' ]);
+%     num_lines = str2num(num_lines);
     
-    parfor cur_line=1:num_lines
+%     fid = fopen(feat_dir_list);
+%     fline = fgetl(fid);
+    
+    flines = strsplit(fileread(feat_dir_list));
+    
+    
+    parfor cur_line=1:length(flines)
 %     while ischar(fline)
+        fline = flines(cur_line);
         scan_loc = strcat(input_dir_base,'/',fline)
         fprintf(logfile,strcat('\nDoing Scan: ',scan_loc));
         [s,c] = system(['ls -la ',scan_loc]);
@@ -73,7 +78,7 @@ function run_cc(input_dir_base,feat_dir_list,ROI_names,mask_thresholds,atlas,out
                 
             end
         end
-        fline = fgetl(fid);
+%         fline = fgetl(fid);
     end
     fclose(fid);
     fclose(logfile);
