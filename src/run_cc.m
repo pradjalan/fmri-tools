@@ -52,10 +52,10 @@ function run_cc(input_dir_base,feat_dir_list,ROI_names,mask_thresholds,atlas,out
 %     while ischar(fline)
         fline = flines(cur_line);
         
-        scan_loc = strcat(input_dir_base,'/',fline);
+        scan_loc = [ input_dir_base '/' fline ];
 %         fprintf(logfile,strcat('\nDoing Scan: ',scan_loc));
         disp(scan_loc);
-        [~,c] = system(strcat('ls -la ', scan_loc));
+        [~,c] = system(['ls -la ' scan_loc]);
         if isempty(strfind(c,'feat'))==0
             
             feat_loc = strcat(scan_loc,'/.feat/');
