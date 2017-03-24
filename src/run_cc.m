@@ -1,4 +1,4 @@
-function run_cc(input_dir_base,feat_dir_list,ROI_names,mask_thresholds,atlas,output_dir_base,log_path)
+function run_cc(input_dir_base,feat_dir_list,ROI_names,mask_thresholds,atlas,output_dir_base)
 % Runs the ROI Extraction and Correlation Analysis Code (generate_cc_map) for a given list of feat directories
 
 % input_dir_base : Directory containing the data for all scans
@@ -27,12 +27,12 @@ function run_cc(input_dir_base,feat_dir_list,ROI_names,mask_thresholds,atlas,out
     [s,c] = system(['mkdir -p ',output_dir_base]);
     end
     
-    if ~isempty(log_path)
-    logfile = fopen(log_path,'w');
-    else
-    logfile = fopen([input_dir_base,'/cc_logs.txt'],'w');
-    end
-    
+%     if ~isempty(log_path)
+%     logfile = fopen(log_path,'w');
+%     else
+%     logfile = fopen([input_dir_base,'/cc_logs.txt'],'w');
+%     end
+%     
     if isempty(atlas)
         atlas = ['${FSLDIR}//data/atlases/HarvardOxford/HarvardOxford-cort-maxprob-thr50-2mm.nii.gz'];
     end
@@ -52,7 +52,8 @@ function run_cc(input_dir_base,feat_dir_list,ROI_names,mask_thresholds,atlas,out
 %     while ischar(fline)
         fline = flines(cur_line);
         scan_loc = strcat(input_dir_base,'/',fline)
-        fprintf(logfile,strcat('\nDoing Scan: ',scan_loc));
+%         fprintf(logfile,strcat('\nDoing Scan: ',scan_loc));
+
         [s,c] = system(['ls -la ',scan_loc]);
         if isempty(strfind(c,'feat'))==0
             
@@ -64,13 +65,14 @@ function run_cc(input_dir_base,feat_dir_list,ROI_names,mask_thresholds,atlas,out
                 ROI_name = char(ROIs(rn));
                 mask_threshold = mask_thresholds(rn);
                 disp(['ROI_NAME: ' ROI_name]);
-                fprintf(logfile,'\nExtracting ROIs..');
+                disp(['FEAT LOCATION: ' feat_loc]);
+%                 fprintf(logfile,'\nExtracting ROIs..');
                 
 %                 roi_extraction(feat_loc,ROI_name,mask_threshold,atlas,'');
                 
                 roi_series(feat_loc,ROI_name,mask_threshold,atlas,'');
                 
-                fprintf(logfile,'\nFinding Corelation Maps..');
+%                 fprintf(logfile,'\nFinding Corelation Maps..');
                 %Copy the Directory Structure of Pre-Processed Data
                 output_dir = strcat(output_dir_base,'/',fline);
                 system(['mkdir -p ',output_dir]);
@@ -80,6 +82,6 @@ function run_cc(input_dir_base,feat_dir_list,ROI_names,mask_thresholds,atlas,out
         end
 %         fline = fgetl(fid);
     end
-    fclose(fid);
-    fclose(logfile);
+%     fclose(fid);
+%     fclose(logfile);
 
