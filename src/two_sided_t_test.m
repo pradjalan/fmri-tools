@@ -1,6 +1,6 @@
 function two_sided_t_test(group1_rootdir,group2_rootdir,ROI_names,output_dir_base)
 
-types_of_map = strsplit('Avg_CC_map_std AvgofMax_CC_map_std Max_CC_map_std');
+types_of_map = strsplit('Avg_CC_map_std');
 ROIs = strsplit(ROI_names);
 for tn=1:length(types_of_map)
     type_of_map = char(types_of_map(tn));
