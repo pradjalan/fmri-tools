@@ -51,6 +51,7 @@ function run_cc(input_dir_base,feat_dir_list,ROI_names,mask_thresholds,atlas,out
     parfor cur_line=1:length(flines)
 %     while ischar(fline)
         fline = flines(cur_line);
+        disp(fline);
         scan_loc = strcat(input_dir_base,'/',fline)
 %         fprintf(logfile,strcat('\nDoing Scan: ',scan_loc));
 
