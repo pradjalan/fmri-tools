@@ -48,7 +48,7 @@ function run_cc(input_dir_base,feat_dir_list,ROI_names,mask_thresholds,atlas,out
     flines = strsplit(fileread(feat_dir_list), '\n' );
     num_lines = length(flines);
     
-    for cur_line=1:num_lines
+    parfor cur_line=1:num_lines
 %     while ischar(fline)
         fline = flines(cur_line);
         
