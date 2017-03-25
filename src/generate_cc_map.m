@@ -22,7 +22,7 @@ system(['mkdir -p ',output_dir]);
 % Load the resting state data
 RS=load_untouch_nii([feat_loc,'/filtered_func_data.nii.gz']); %load nifti file of preprocessed functional data
 RS_size=size(RS.img);
-RS_masked=load_untouch_nii([ROI_dir_name,'/filtered_func_ROI_masked.nii.gz']); %load masked 4D functional data, time series of the ROI voxels after multiplying with functional data
+RS_masked=load_untouch_nii([feat_loc, '/reg/filtered_func_ROI_masked.nii.gz']); %load masked 4D functional data, time series of the ROI voxels after multiplying with functional data
 
 % Load ROI data
 ROI_MASK=load_untouch_nii([ROI_dir_name,'/ROI_xfmed_mask.nii.gz']); %load transformed mask of ROI
@@ -100,7 +100,7 @@ if isempty(find(type_of_map==1,1))==0
     Avg_CC_img.img=Avg_CC_MAP;
     save_nii(Avg_CC_img,[output_dir,'/Avg_CC_map.nii.gz']);
     % registration of map to standard space
-    avgmap2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',output_dir,'/Avg_CC_map.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',ROI_dir_name,'/filtered_func2standard.mat',' -out ',output_dir,'/Avg_CC_map_std.nii.gz',' -omat ',output_dir,'/Avg_CC_map_2_std.mat"'];
+    avgmap2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',output_dir,'/Avg_CC_map.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',feat_loc, '/reg/filtered_func2standard.mat',' -out ',output_dir,'/Avg_CC_map_std.nii.gz',' -omat ',output_dir,'/Avg_CC_map_2_std.mat"'];
     system(avgmap2std);
     
     func_mask2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',feat_loc,'/mask.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',output_dir,'/Avg_CC_map_2_std.mat',' -out ',output_dir,'/MASK_Avg_CC_map_std.nii.gz',' -omat ',output_dir,'/MASK_Avg_CC_map_2_std.mat"'];
@@ -129,7 +129,7 @@ if isempty(find(type_of_map==2,1))==0
     save_nii(Max_CC_img,[output_dir,'/Max_CC_map.nii.gz']);
     
     % registration of map to standard space
-    maxmap2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',output_dir,'/Max_CC_map.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',ROI_dir_name,'/filtered_func2standard.mat',' -out ',output_dir,'/Max_CC_map_std.nii.gz',' -omat ',output_dir,'/Max_CC_map_2_std.mat"'];
+    maxmap2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',output_dir,'/Max_CC_map.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',feat_loc, '/reg/filtered_func2standard.mat',' -out ',output_dir,'/Max_CC_map_std.nii.gz',' -omat ',output_dir,'/Max_CC_map_2_std.mat"'];
     system(maxmap2std);
     
     func_mask2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',feat_loc,'/mask.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',output_dir,'/Max_CC_map_2_std.mat',' -out ',output_dir,'/MASK_Max_CC_map_std.nii.gz',' -omat ',output_dir,'/MASK_Max_CC_map_2_std.mat"'];
@@ -159,7 +159,7 @@ if isempty(find(type_of_map==3,1))==0
     save_nii(AvgofMax_CC_img,[output_dir,'/AvgofMax_CC_map.nii.gz']);
     
     % registration of map to standard space
-    avgmap2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',output_dir,'/AvgofMax_CC_map.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',ROI_dir_name,'/filtered_func2standard.mat',' -out ',output_dir,'/AvgofMax_CC_map_std.nii.gz',' -omat ',output_dir,'/AvgofMax_CC_map_2_std.mat"'];
+    avgmap2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',output_dir,'/AvgofMax_CC_map.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',feat_loc, '/reg/filtered_func2standard.mat',' -out ',output_dir,'/AvgofMax_CC_map_std.nii.gz',' -omat ',output_dir,'/AvgofMax_CC_map_2_std.mat"'];
     system(avgmap2std);
     
     func_mask2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',feat_loc,'/mask.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',output_dir,'/AvgofMax_CC_map_2_std.mat',' -out ',output_dir,'/MASK_AvgofMax_CC_map_std.nii.gz',' -omat ',output_dir,'/MASK_AvgofMax_CC_map_2_std.mat"'];
