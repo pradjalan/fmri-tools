@@ -22,7 +22,7 @@ system(['mkdir -p ',output_dir]);
 % Load the resting state data
 RS=load_untouch_nii([feat_loc,'/filtered_func_data.nii.gz']); %load nifti file of preprocessed functional data
 RS_size=size(RS.img);
-RS_masked=load_untouch_nii([feat_loc, '/reg/filtered_func_ROI_masked.nii.gz']); %load masked 4D functional data, time series of the ROI voxels after multiplying with functional data
+RS_masked=load_untouch_nii([ROI_dir_name, '/filtered_func_ROI_masked.nii.gz']); %load masked 4D functional data, time series of the ROI voxels after multiplying with functional data
 
 % Load ROI data
 ROI_MASK=load_untouch_nii([ROI_dir_name,'/ROI_xfmed_mask.nii.gz']); %load transformed mask of ROI
