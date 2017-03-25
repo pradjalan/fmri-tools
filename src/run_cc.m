@@ -75,7 +75,7 @@ function run_cc(input_dir_base,feat_dir_list,ROI_names,mask_thresholds,atlas,out
                 
 %                 fprintf(logfile,'\nFinding Corelation Maps..');
                 %Copy the Directory Structure of Pre-Processed Data
-                output_dir = strcat(output_dir_base,'/',fline);
+                output_dir = strjoin(strcat(output_dir_base,'/',fline));
                 system(['mkdir -p ',output_dir]);
                 generate_cc_map(feat_loc,ROI_name,mask_threshold,[1],output_dir);
                 
