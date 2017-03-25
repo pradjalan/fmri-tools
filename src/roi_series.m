@@ -25,7 +25,6 @@ else
     ROI_dir_name = output_dir;
 end
 
-    
 
 
 % Extract the ROI Mask from the given atlas using intensity index (mask_threshold)
@@ -33,7 +32,7 @@ end
  status9=system(Xfmation);
 
 % Bring the ROI Mask to Functional Domain
- FLIRT=['sh -c ". ${FSLDIR}/etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',ROI_dir_name,'/ROI_mask.nii.gz',' -ref ',feat_loc,'/filtered_func_data.nii.gz',' -applyxfm -init ',ROI_dir_name,'/standard2filtered_func.mat',' -out ',ROI_dir_name,'/ROI_xfmed.nii.gz"'];
+ FLIRT=['sh -c ". ${FSLDIR}/etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',ROI_dir_name,'/ROI_mask.nii.gz',' -ref ',feat_loc,'/filtered_func_data.nii.gz',' -applyxfm -init ',feat_loc, '/reg/standard2filtered_func.mat',' -out ',ROI_dir_name,'/ROI_xfmed.nii.gz"'];
  status6=system(FLIRT);
  
 % Remove the effect of smoothening to exclude extra voxels in binary mask
