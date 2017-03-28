@@ -33,7 +33,7 @@ function run_fdr(input_dir_base,ROI_names,mask_file,output_dir_base)
     tom = strsplit('Avg_CC_map_std');
     for tn = 1:length(tom)
         type_of_map = char(tom(tn));
-        file_base = ['merged_cc_maps_' type_of_map '.nii.gz'];
+        file_base = [type_of_map '.nii.gz'];
         ROIs = strsplit(ROI_names);
             for rn=1:length(ROIs)
                 ROI_name = char(ROIs(rn));
