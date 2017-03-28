@@ -30,7 +30,7 @@ function run_fdr(input_dir_base,ROI_names,mask_file,output_dir_base)
     [s,c] = system(['mkdir -p ',output_dir_base]);
     end
     
-    tom = strsplit('Avg_CC_map_std AvgofMax_CC_map_std Max_CC_map_std');
+    tom = strsplit('Avg_CC_map_std');
     for tn = 1:length(tom)
         type_of_map = char(tom(tn));
         file_base = ['merged_cc_maps_' type_of_map '.nii.gz'];
