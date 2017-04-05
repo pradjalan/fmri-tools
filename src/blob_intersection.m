@@ -38,7 +38,7 @@ for rn=1:length(rois)
  end
  
  roi_voxels = strsplit(c);
- roi_voxels = str2num(c(1));
+ roi_voxels = char(c(1));
 
  mul_command = ['fslmaths ' input_file ' -mul ' roi_mask_path ' ' rois_dir '/temp_blob_intersection.nii.gz' ];
  mul_neg_command = ['fslmaths ' input_file ' -uthr 0 -mul ' roi_mask_path ' ' rois_dir '/temp_blob_intersection_negative.nii.gz' ];
@@ -70,7 +70,7 @@ for rn=1:length(rois)
     disp('Error Running fslstats..');
  end
  file_line = strjoin(strsplit(c),',');
- file_line = [roi ',' num2str(roi_voxels) ',' file_line(1:end-1)];
+ file_line = [roi ',' roi_voxels ',' file_line(1:end-1)];
  
  stat_command_pos = ['fslstats ' rois_dir '/temp_blob_intersection_positive.nii.gz' ' -M' ];
  [s,c] = system(['sh -c ". ${FSLDIR}/etc/fslconf/fsl.sh;${FSLDIR}/bin/' stat_command_pos '  "']);
