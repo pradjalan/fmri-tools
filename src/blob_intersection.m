@@ -56,14 +56,14 @@ for rn=1:length(rois)
     disp('Error Running fslstats..');
  end
  file_line = strjoin(strsplit(c),',');
- file_line = file_line(1:end-1);
+ file_line = [roi ',' file_line(1:end-1)];
  
  stat_command_pos = ['fslstats ' rois_dir '/temp_blob_intersection_positive.nii.gz' ' -M' ];
  [s,c] = system(['sh -c ". ${FSLDIR}/etc/fslconf/fsl.sh;${FSLDIR}/bin/' stat_command_pos '  "']);
  if s~=0
     disp('Error Running fslstats..');
  end
- file_line = [file_line ',' c];
+ file_line = [file_line ',' strtrim(c)];
 
 
 
@@ -72,7 +72,7 @@ for rn=1:length(rois)
  if s~=0
     disp('Error Running fslstats..');
  end
- file_line = [file_line ',' c];
+ file_line = [file_line ',' strtrim(c)];
  
  fprintf(fid,file_line);
  
