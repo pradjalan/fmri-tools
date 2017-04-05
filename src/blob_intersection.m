@@ -7,17 +7,17 @@ fsldir = getenv('FSLDIR');
 if length(mask_file)==0
     mask_file = [fsldir,'/data/standard/MNI152_T1_2mm_brain_mask.nii.gz'];
 end
-
-if ~exist(out_dir,'dir')
-    system(['mkdir -p ' out_dir]);
-end
+% 
+% if ~exist(out_dir,'dir')
+%     system(['mkdir -p ' out_dir]);
+% end
 
 data_file = load_untouch_nii(input_file);
-image_matrix = data_file.img;
-
-standard_header=load_untouch_header_only(mask_file);
-standard_file = load_untouch_nii(mask_file);
-standard_image = standard_file.img;
+% image_matrix = data_file.img;
+% 
+% standard_header=load_untouch_header_only(mask_file);
+% standard_file = load_untouch_nii(mask_file);
+% standard_image = standard_file.img;
 
 rois = strsplit(rois);
 
