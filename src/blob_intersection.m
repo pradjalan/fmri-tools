@@ -74,7 +74,7 @@ for rn=1:length(rois)
  end
  file_line = [file_line ',' strtrim(c)];
  
- fprintf(fid,file_line);
+ fprintf(fid,[file_line '\n']);
  
  
 end
