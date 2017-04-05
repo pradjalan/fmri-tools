@@ -38,6 +38,7 @@ for rn=1:length(rois)
  end
  
  roi_voxels = str2num(c);
+ roi_voxels = c(1);
 
  mul_command = ['fslmaths ' input_file ' -mul ' roi_mask_path ' ' rois_dir '/temp_blob_intersection.nii.gz' ];
  mul_neg_command = ['fslmaths ' input_file ' -uthr 0 -mul ' roi_mask_path ' ' rois_dir '/temp_blob_intersection_negative.nii.gz' ];
