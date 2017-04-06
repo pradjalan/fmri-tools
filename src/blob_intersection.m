@@ -37,8 +37,8 @@ for rn=1:length(rois)
     disp('Error in fslstats..');
  end
  
- roi_voxels = strsplit(c);
- roi_voxels = (c(1))
+ roi_voxels = str2num(strsplit(c));
+ roi_voxels = c(1);
  
  mul_command = ['fslmaths ' input_file ' -mul ' roi_mask_path ' ' rois_dir '/temp_blob_intersection.nii.gz' ];
  mul_neg_command = ['fslmaths ' input_file ' -uthr 0 -mul ' roi_mask_path ' ' rois_dir '/temp_blob_intersection_negative.nii.gz' ];
