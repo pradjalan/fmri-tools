@@ -32,7 +32,7 @@ end
  status9=system(Xfmation);
 
 % Bring the ROI Mask to Functional Domain
- FLIRT=['sh -c ". ${FSLDIR}/etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',ROI_dir_name,'/ROI_mask.nii.gz',' -ref ',feat_loc,'/filtered_func_data.nii.gz',' -applyxfm -init ',feat_loc, '/reg/standard2filtered_func.mat',' -out ',ROI_dir_name,'/ROI_xfmed.nii.gz"'];
+ FLIRT=['sh -c ". ${FSLDIR}/etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',ROI_dir_name,'/ROI_mask.nii.gz',' -ref ',feat_loc,'/filtered_func_data.nii.gz',' -applyxfm -init ',feat_loc, '/reg/standard2example_func.mat',' -out ',ROI_dir_name,'/ROI_xfmed.nii.gz"'];
  status6=system(FLIRT);
  
 % Remove the effect of smoothening to exclude extra voxels in binary mask
@@ -44,7 +44,7 @@ xfm_Mask=['sh -c ". ${FSLDIR}/etc/fslconf/fsl.sh;${FSLDIR}/bin/fslmaths ',feat_l
 status8=system(xfm_Mask);
 
 % Save ROI 
-FLIRT_high=['sh -c ". ${FSLDIR}/etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',ROI_dir_name,'/ROI_mask.nii.gz',' -ref ',feat_loc,'/reg/highres_reoriented.nii.gz',' -applyxfm -init ',feat_loc,'/reg/standard2highres_brain.mat',' -out ',ROI_dir_name,'/ROI_mask_highres.nii.gz"'];
+FLIRT_high=['sh -c ". ${FSLDIR}/etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',ROI_dir_name,'/ROI_mask.nii.gz',' -ref ',feat_loc,'/reg/highres_reoriented.nii.gz',' -applyxfm -init ',feat_loc,'/reg/standard2highres.mat',' -out ',ROI_dir_name,'/ROI_mask_highres.nii.gz"'];
 status10=system(FLIRT_high);
 
 status=status6+status7+status8+status9+status10;
