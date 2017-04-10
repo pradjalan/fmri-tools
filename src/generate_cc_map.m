@@ -63,7 +63,7 @@ ROI_indices = find(ROI_MASK_img);
 [ROI_x ROI_y ROI_z] =  ind2sub(ROI_MASK_size, ROI_indices);
 ROI_data = zeros(length(ROI_indices),RS_size(4));
 for i=1:length(ROI_indices)
-    ROI_data(i,:) = RS.img(ROI_x(i),ROI_y(i), ROI_z(i),:);
+    ROI_data(i,:) = RS_data(ROI_indices(i),:);
 end
 
 
