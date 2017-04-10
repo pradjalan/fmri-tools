@@ -48,7 +48,7 @@ function run_cc(input_dir_base,feat_dir_list,ROI_names,mask_thresholds,atlas,out
     flines = strsplit(fileread(feat_dir_list), '\n' );
     num_lines = length(flines);
     
-    parfor cur_line=1:num_lines
+    for cur_line=1:num_lines
 %     while ischar(fline)
         fline = flines(cur_line);
         
@@ -59,6 +59,7 @@ function run_cc(input_dir_base,feat_dir_list,ROI_names,mask_thresholds,atlas,out
         if isempty(strfind(c,'feat'))==0
             
             feat_loc = strcat(scan_loc,'/.feat/');
+
             create_transformations(feat_loc);
             
             ROIs = strsplit(ROI_names);
@@ -78,6 +79,8 @@ function run_cc(input_dir_base,feat_dir_list,ROI_names,mask_thresholds,atlas,out
                 output_dir = strjoin(strcat(output_dir_base,'/',fline));
                 system(['mkdir -p ',output_dir]);
                 generate_cc_map(feat_loc,ROI_name,mask_threshold,[1],output_dir);
+                
+                
                 
             end
         end
