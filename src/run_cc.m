@@ -58,7 +58,7 @@ function run_cc(input_dir_base,feat_dir_list,ROI_names,mask_thresholds,atlas,out
         [~,c] = system(['ls -la ' scan_loc]);
         if isempty(strfind(c,'feat'))==0
             
-            feat_loc = strcat(scan_loc,'/rest.feat/');
+            feat_loc = strcat(scan_loc,'/.feat/');
 
 %             create_transformations(feat_loc);
             
