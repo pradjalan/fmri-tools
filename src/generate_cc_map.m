@@ -69,13 +69,12 @@ size(ROI_data)
 %Remove Global Signal
 disp(' Removing the Global Signal..')
 global_signal = nanmean(RS_data,1);
-global_component = (global_signal*RS_data.')/(global_signal*global_signal.') ;
 
-size(global_signal)
-size(global_component)
+global_component_RS = (global_signal*RS_data.')/(global_signal*global_signal.') ;
+RS_data = RS_data - global_component_RS.'*global_signal;
 
-RS_data = RS_data - global_component.'*global_signal;
-ROI_data = ROI_data - global_component.'*global_signal;
+global_component_ROI = (global_signal*ROI_data.')/(global_signal*global_signal.') ;
+ROI_data = ROI_data - global_component_ROI.'*global_signal;
 
 
 
