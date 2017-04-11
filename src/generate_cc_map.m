@@ -63,6 +63,9 @@ disp('Normalising Data..');
 RS_data = zscore(RS_data,0,2);
 ROI_data = zscore(ROI_data,0,2);
 
+size(RS_data)
+size(ROI_data)
+
 %Remove Global Signal
 disp(' Removing the Global Signal..')
 global_signal = nanmean(RS_data,1);
