@@ -30,10 +30,10 @@ RS_MASK=load_untouch_nii([feat_loc,'/mask.nii.gz']); %load 3D mask of functional
 % Load ROI data
 ROI_MASK=load_untouch_nii([ROI_dir_name,'/ROI_xfmed_mask.nii.gz']); %load transformed mask of ROI
 ROI_MASK_img=ROI_MASK.img;
-ROI_MASK_size = size(ROI_MASK_img);
+ROI_MASK_size=size(ROI_MASK_img);
 
 ROI_series=load_untouch_nii([ROI_dir_name, '/filtered_func_ROI_masked.nii.gz']); %load masked 4D functional data, time series of the ROI voxels after multiplying with functional data
-
+ROI_size = size(ROI_series.img);
 
 
 
@@ -50,8 +50,8 @@ RS_data = old_RS_data(RS_MASK_indices,:);
 
 ROI_MASK_indices = find(ROI_MASK.img);
 [ROI_x ROI_y ROI_z] = ind2sub(size(ROI_series.img), ROI_MASK_indices);
-old_ROI_data = reshape(double(ROI_series.img),ROI_MASK_size(1)*ROI_MASK_size(2)*ROI_MASK_size(3),ROI_MASK_size(4));
-ROI_data = zeros(length(ROI_MASK_indices),ROI_MASK_size(4));
+old_ROI_data = reshape(double(ROI_series.img),ROI_size(1)*ROI_size(2)*ROI_size(3),ROI_size(4));
+ROI_data = zeros(length(ROI_MASK_indices),ROI_size(4));
 ROI_data = old_ROI_data(ROI_MASK_indices,:);
 
 
@@ -63,6 +63,7 @@ disp('Normalising Data..');
 RS_data = zscore(RS_data,0,2);
 ROI_data = zscore(ROI_data,0,2);
 
+%Remove Global Signal
 disp(' Removing the Global Signal..')
 global_signal = nanmean(RS_data,1);
 global_component = (global_signal*RS_data.')/(global_signal*global_signal.') ;
