@@ -22,17 +22,22 @@ system(['mkdir -p ',output_dir]);
 % Load the resting state data
 RS=load_untouch_nii([feat_loc,'/filtered_func_data.nii.gz']); %load nifti file of preprocessed functional data
 RS_size=size(RS.img);
-RS_masked=load_untouch_nii([ROI_dir_name,'/filtered_func_ROI_masked.nii.gz']); %load masked 4D functional data
+
+RS_MASK=load_untouch_nii([feat_loc,'/mask.nii.gz']); %load 3D mask of functional data
+
+
 
 % Load ROI data
 ROI_MASK=load_untouch_nii([ROI_dir_name,'/ROI_xfmed_mask.nii.gz']); %load transformed mask of ROI
 ROI_MASK_img=ROI_MASK.img;
 ROI_MASK_size = size(ROI_MASK_img);
 
-RS_MASK=load_untouch_nii([feat_loc,'/mask.nii.gz']); %load 3D mask of functional data
+ROI_series=load_untouch_nii([ROI_dir_name, '/filtered_func_ROI_masked.nii.gz']); %load masked 4D functional data, time series of the ROI voxels after multiplying with functional data
 
 
-%% Find the coordinates of the ROI mask
+
+
+%% Find the coordinates of the ROI and RS mask
 
 disp('Finding Coordinates for ROI and RS..');
 % ROI_x=[]; ROI_y=[]; ROI_z=[];
@@ -43,28 +48,40 @@ RS_data = zeros(length(RS_MASK_indices),RS_size(4));
 RS_data = old_RS_data(RS_MASK_indices,:);
 
 
+ROI_MASK_indices = find(ROI_MASK.img);
+[ROI_x ROI_y ROI_z] = ind2sub(size(ROI_series.img), ROI_MASK_indices);
+old_ROI_data = reshape(double(ROI_series.img),ROI_MASK_size(1)*ROI_MASK_size(2)*ROI_MASK_size(3),ROI_MASK_size(4));
+ROI_data = zeros(length(ROI_MASK_indices),ROI_MASK_size(4));
+ROI_data = old_ROI_data(ROI_MASK_indices,:);
+
+
+
 
 
 %normalise
 disp('Normalising Data..');
 RS_data = zscore(RS_data,0,2);
+ROI_data = zscore(ROI_data,0,2);
 
-
- Removing the Global Signal
+disp(' Removing the Global Signal..')
 global_signal = nanmean(RS_data,1);
-global_component = (global_signal*RS_data.')/(global_signal.'*global_signal) ;
+global_component = (global_signal*RS_data.')/(global_signal*global_signal.') ;
 RS_data = RS_data - global_component.'*global_signal;
+ROI_data = ROI_data - global_component.'*global_signal;
+
+
 
 %normalise again
 RS_data = zscore(RS_data,0,2);
+ROI_data = zscore(ROI_data,0,2);
 
-% Create Time Series Matrix for ROI
-ROI_indices = find(ROI_MASK_img);
-[ROI_x ROI_y ROI_z] =  ind2sub(ROI_MASK_size, ROI_indices);
-ROI_data = zeros(length(ROI_indices),RS_size(4));
-for i=1:length(ROI_indices)
-    ROI_data(i,:) = RS.img(ROI_x(i),ROI_y(i), ROI_z(i),:);
-end
+% % Create Time Series Matrix for ROI
+% ROI_indices = find(ROI_MASK_img);
+% [ROI_x ROI_y ROI_z] =  ind2sub(ROI_MASK_size, ROI_indices);
+% ROI_data = zeros(length(ROI_indices),RS_size(4));
+% for i=1:length(ROI_indices)
+%     ROI_data(i,:) = RS_data(ROI_indices(i),:);
+% end
 
 
 if isempty(ROI_indices)==0 %i.e. if not empty
@@ -100,7 +117,7 @@ if isempty(find(type_of_map==1,1))==0
     Avg_CC_img.img=Avg_CC_MAP;
     save_nii(Avg_CC_img,[output_dir,'/Avg_CC_map.nii.gz']);
     % registration of map to standard space
-    avgmap2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',output_dir,'/Avg_CC_map.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',ROI_dir_name,'/filtered_func2standard.mat',' -out ',output_dir,'/Avg_CC_map_std.nii.gz',' -omat ',output_dir,'/Avg_CC_map_2_std.mat"'];
+    avgmap2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',output_dir,'/Avg_CC_map.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',feat_loc, '/reg/filtered_func2standard.mat',' -out ',output_dir,'/Avg_CC_map_std.nii.gz',' -omat ',output_dir,'/Avg_CC_map_2_std.mat"'];
     system(avgmap2std);
     
     func_mask2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',feat_loc,'/mask.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',output_dir,'/Avg_CC_map_2_std.mat',' -out ',output_dir,'/MASK_Avg_CC_map_std.nii.gz',' -omat ',output_dir,'/MASK_Avg_CC_map_2_std.mat"'];
@@ -129,7 +146,7 @@ if isempty(find(type_of_map==2,1))==0
     save_nii(Max_CC_img,[output_dir,'/Max_CC_map.nii.gz']);
     
     % registration of map to standard space
-    maxmap2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',output_dir,'/Max_CC_map.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',ROI_dir_name,'/filtered_func2standard.mat',' -out ',output_dir,'/Max_CC_map_std.nii.gz',' -omat ',output_dir,'/Max_CC_map_2_std.mat"'];
+    maxmap2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',output_dir,'/Max_CC_map.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',feat_loc, '/reg/filtered_func2standard.mat',' -out ',output_dir,'/Max_CC_map_std.nii.gz',' -omat ',output_dir,'/Max_CC_map_2_std.mat"'];
     system(maxmap2std);
     
     func_mask2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',feat_loc,'/mask.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',output_dir,'/Max_CC_map_2_std.mat',' -out ',output_dir,'/MASK_Max_CC_map_std.nii.gz',' -omat ',output_dir,'/MASK_Max_CC_map_2_std.mat"'];
@@ -159,7 +176,7 @@ if isempty(find(type_of_map==3,1))==0
     save_nii(AvgofMax_CC_img,[output_dir,'/AvgofMax_CC_map.nii.gz']);
     
     % registration of map to standard space
-    avgmap2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',output_dir,'/AvgofMax_CC_map.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',ROI_dir_name,'/filtered_func2standard.mat',' -out ',output_dir,'/AvgofMax_CC_map_std.nii.gz',' -omat ',output_dir,'/AvgofMax_CC_map_2_std.mat"'];
+    avgmap2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',output_dir,'/AvgofMax_CC_map.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',feat_loc, '/reg/filtered_func2standard.mat',' -out ',output_dir,'/AvgofMax_CC_map_std.nii.gz',' -omat ',output_dir,'/AvgofMax_CC_map_2_std.mat"'];
     system(avgmap2std);
     
     func_mask2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',feat_loc,'/mask.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',output_dir,'/AvgofMax_CC_map_2_std.mat',' -out ',output_dir,'/MASK_AvgofMax_CC_map_std.nii.gz',' -omat ',output_dir,'/MASK_AvgofMax_CC_map_2_std.mat"'];
