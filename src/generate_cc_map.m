@@ -63,9 +63,6 @@ disp('Normalising Data..');
 RS_data = zscore(RS_data,0,2);
 ROI_data = zscore(ROI_data,0,2);
 
-size(RS_data)
-size(ROI_data)
-
 %Remove Global Signal
 disp(' Removing the Global Signal..')
 global_signal = nanmean(RS_data,1);
@@ -130,8 +127,8 @@ if isempty(find(type_of_map==1,1))==0
     func_mask2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',feat_loc,'/mask.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',output_dir,'/Avg_CC_map_2_std.mat',' -out ',output_dir,'/MASK_Avg_CC_map_std.nii.gz',' -omat ',output_dir,'/MASK_Avg_CC_map_2_std.mat"'];
     system(func_mask2std);
     %load standard space data of subject to construct 4D map
-    Std_CC_Avg=load_untouch_nii([output_dir,'/Avg_CC_map_std.nii.gz']);
-    Std_CC_Avg_img=Std_CC_Avg.img;
+%     Std_CC_Avg=load_untouch_nii([output_dir,'/Avg_CC_map_std.nii.gz']);
+%     Std_CC_Avg_img=Std_CC_Avg.img;
 else
     Std_CC_Avg_img=[];
 end
