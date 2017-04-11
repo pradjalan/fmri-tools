@@ -1,4 +1,4 @@
-function run_cc_parallel(input_dir_base,feat_dir_list,ROIs_dir, ROI_names,output_dir_base)
+ function run_cc_all(input_dir_base,feat_dir_list,ROIs_dir, ROI_names,output_dir_base)
         ROIs = strsplit(ROI_names);
         for rn=1:length(ROIs)
             ROI_name = char(ROIs(rn));
