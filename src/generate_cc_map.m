@@ -91,7 +91,7 @@ ROI_data = zscore(ROI_data,0,2);
 % end
 
 
-if isempty(ROI_indices)==0 %i.e. if not empty
+if isempty(ROI_MASK_indices)==0 %i.e. if not empty
     
 %% correlation coefficient (CC) of each ROI voxel correspong to each RS voxel
 disp('Finding Corelations..');
