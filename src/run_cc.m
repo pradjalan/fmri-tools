@@ -59,7 +59,7 @@ function run_cc(input_dir_base,feat_dir_list,ROI_names,mask_thresholds,atlas,out
         if isempty(strfind(c,'feat'))==0
             
             feat_loc = strcat(scan_loc,'/.feat/');
-            reg_loc = [feat_loc '/reg/']);
+            reg_loc = [feat_loc '/reg/'];
             if ~( exist([reg_loc '/standard2filtered_func.mat'], file) )
                 create_transformations(feat_loc);
             end 
