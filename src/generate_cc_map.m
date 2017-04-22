@@ -121,7 +121,7 @@ if isempty(find(type_of_map==1,1))==0
     Avg_CC_img.img=Avg_CC_MAP;
     save_nii(Avg_CC_img,[output_dir,'/Avg_CC_map.nii.gz']);
     % registration of map to standard space
-    avgmap2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',output_dir,'/Avg_CC_map.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',feat_loc, '/reg/example_func2standard.mat',' -out ',output_dir,'/Avg_CC_map_std.nii.gz',' -omat ',output_dir,'/Avg_CC_map_2_std.mat"'];
+    avgmap2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',output_dir,'/Avg_CC_map.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',feat_loc, '/reg/filtered_func2standard.mat',' -out ',output_dir,'/Avg_CC_map_std.nii.gz',' -omat ',output_dir,'/Avg_CC_map_2_std.mat"'];
     system(avgmap2std);
     
     func_mask2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',feat_loc,'/mask.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',output_dir,'/Avg_CC_map_2_std.mat',' -out ',output_dir,'/MASK_Avg_CC_map_std.nii.gz',' -omat ',output_dir,'/MASK_Avg_CC_map_2_std.mat"'];
@@ -150,7 +150,7 @@ if isempty(find(type_of_map==2,1))==0
     save_nii(Max_CC_img,[output_dir,'/Max_CC_map.nii.gz']);
     
     % registration of map to standard space
-    maxmap2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',output_dir,'/Max_CC_map.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',feat_loc, '/reg/example_func2standard.mat',' -out ',output_dir,'/Max_CC_map_std.nii.gz',' -omat ',output_dir,'/Max_CC_map_2_std.mat"'];
+    maxmap2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',output_dir,'/Max_CC_map.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',feat_loc, '/reg/filtered_func2standard.mat',' -out ',output_dir,'/Max_CC_map_std.nii.gz',' -omat ',output_dir,'/Max_CC_map_2_std.mat"'];
     system(maxmap2std);
     
     func_mask2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',feat_loc,'/mask.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',output_dir,'/Max_CC_map_2_std.mat',' -out ',output_dir,'/MASK_Max_CC_map_std.nii.gz',' -omat ',output_dir,'/MASK_Max_CC_map_2_std.mat"'];
@@ -180,7 +180,7 @@ if isempty(find(type_of_map==3,1))==0
     save_nii(AvgofMax_CC_img,[output_dir,'/AvgofMax_CC_map.nii.gz']);
     
     % registration of map to standard space
-    avgmap2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',output_dir,'/AvgofMax_CC_map.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',feat_loc, '/reg/example_func2standard.mat',' -out ',output_dir,'/AvgofMax_CC_map_std.nii.gz',' -omat ',output_dir,'/AvgofMax_CC_map_2_std.mat"'];
+    avgmap2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',output_dir,'/AvgofMax_CC_map.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',feat_loc, '/reg/filtered_func2standard.mat',' -out ',output_dir,'/AvgofMax_CC_map_std.nii.gz',' -omat ',output_dir,'/AvgofMax_CC_map_2_std.mat"'];
     system(avgmap2std);
     
     func_mask2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',feat_loc,'/mask.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',output_dir,'/AvgofMax_CC_map_2_std.mat',' -out ',output_dir,'/MASK_AvgofMax_CC_map_std.nii.gz',' -omat ',output_dir,'/MASK_AvgofMax_CC_map_2_std.mat"'];
