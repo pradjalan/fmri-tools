@@ -31,7 +31,7 @@ radii = str2num(radii_string);
 for rn=1:length(rois)
  roi = char(rois(rn));
  radius = radii(rn);
- roi_mask_path = [rois_dir '/' roi '_' num2str(radius) '.nii.gz']
+ roi_mask_path = [rois_dir '/' roi '_' radius '.nii.gz']
 
  stat_command = ['fslstats ' roi_mask_path ' -V' ];
  [s,c] = system(['sh -c ". ${FSLDIR}/etc/fslconf/fsl.sh;${FSLDIR}/bin/' stat_command '  "']);

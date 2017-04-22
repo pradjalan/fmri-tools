@@ -17,6 +17,7 @@ standard_image = standard_file.img;
 
 fid = fopen(config_file);
 
+
 xs = str2num(fgetl(fid));
 ys = str2num(fgetl(fid));
 zs = str2num(fgetl(fid));
