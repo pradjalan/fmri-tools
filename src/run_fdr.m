@@ -28,9 +28,9 @@ for ipdir=1:length(ipdirs)
     input_dir_base = [input_dir_root '/' char(ipdirs(ipdir))];
     disp(input_dir_base);
     
-    if length(output_dir_base)==0
-        output_dir_base = input_dir_base;
-    end
+    
+    output_dir_base = input_dir_base;
+    
     
     if ~exist(output_dir_base,'dir')
     [s,c] = system(['mkdir -p ',output_dir_base]);
