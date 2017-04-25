@@ -1,4 +1,4 @@
-function run_fdr(input_dir,ROI_names,mask_file,output_dir_base)
+function run_fdr(input_dir_root,ROI_names,mask_file,output_dir_base)
 % Runs the ROI Extraction and Correlation Analysis Code (generate_cc_map) for a given list of feat directories
 
 % input_dir_base : Directory containing the data for all scans
@@ -22,10 +22,10 @@ function run_fdr(input_dir,ROI_names,mask_file,output_dir_base)
 % per the conventions in the previous codes (roi_extraction.m and
 % genereate_cc_map.m
 
-ipdirs = strsplit(ls(input_dir));
+ipdirs = strsplit(ls(input_dir_root));
 for ipdir=1:length(ipdirs)
     
-    input_dir_base = [input_dir '/' char(ipdirs(ipdir))];
+    input_dir_base = [input_dir_root '/' char(ipdirs(ipdir))];
     disp(input_dir_base);
     
     if length(output_dir_base)==0
