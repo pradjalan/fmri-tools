@@ -25,7 +25,8 @@ function run_fdr(input_dir,ROI_names,mask_file,output_dir_base)
 ipdirs = strsplit(ls(input_dir));
 for ipdir=1:length(ipdirs)
     
-    input_dir_base = char(ipdirs(ipdir));
+    input_dir_base = [input_dir '/' char(ipdirs(ipdir))];
+    
     
     if length(output_dir_base)==0
         output_dir_base = input_dir_base;
