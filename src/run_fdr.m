@@ -26,7 +26,7 @@ ipdirs = strsplit(ls(input_dir));
 for ipdir=1:length(ipdirs)
     
     input_dir_base = [input_dir '/' char(ipdirs(ipdir))];
-    
+    disp(input_dir_base);
     
     if length(output_dir_base)==0
         output_dir_base = input_dir_base;
