@@ -20,7 +20,7 @@ system(['mkdir -p ',output_dir]);
 %% Load Input Data
 
 % Load the resting state data
-RS=load_untouch_nii([feat_loc,'/filtered_func_data.nii.gz']); %load nifti file of preprocessed functional data
+RS=load_nii_gz([feat_loc,'/filtered_func_data.nii.gz']); %load nifti file of preprocessed functional data
 RS_size=size(RS.img);
 
 RS_MASK=load_untouch_nii([feat_loc,'/mask.nii.gz']); %load 3D mask of functional data
