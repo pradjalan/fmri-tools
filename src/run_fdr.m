@@ -45,15 +45,20 @@ for ipdir=1:length(ipdirs)
                 ROI_name = char(ROIs(rn));
                 disp(['Type of Map: ' type_of_map ', ROI: ' ROI_name]);
                 %Copy the Directory Structure of Pre-Processed Data
-                output_dir = strcat(output_dir_base,'/',ROI_name);
+                
                 input_dir = strcat(input_dir_base,'/',ROI_name);
-                system(['mkdir -p ',output_dir]);
                 p_file = [input_dir '/log_p_value_' file_base];
                 t_file = [input_dir '/T_value_' file_base];
-                out_file = [output_dir '/' ROI_name '_' type_of_map '.nii.gz'];
-                fdr(p_file,t_file,mask_file, out_file);
                 
                 
+                if exist(p_file,'file') && exist(t_file,'file')
+                    output_dir = strcat(output_dir_base,'/',ROI_name);
+                    system(['mkdir -p ',output_dir]);
+                    out_file = [output_dir '/' ROI_name '_' type_of_map '.nii.gz'];
+                    fdr(p_file,t_file,mask_file, out_file);
+                else
+                    disp(['p-file and/or t-file not found in ' input_dir]);
+                end
             end
         
         
