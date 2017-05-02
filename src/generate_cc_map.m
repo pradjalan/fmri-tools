@@ -1,6 +1,6 @@
 
 
-function [Std_CC_Avg_img,Std_CC_Max_img,Std_CC_AvgofMax_img]=generate_cc_map(feat_loc,ROI_name,mask_threshold,type_of_map,output_dir_base)
+function [Std_CC_Avg_img,Std_CC_Max_img,Std_CC_AvgofMax_img]=generate_cc_map(feat_loc,ROI_name,mask_threshold,type_of_map,fsl_transformation,output_dir_base)
 % feat_loc: Location of feat folder containing functional data and ROI files
 % ROI_name: ROI_name, to be appended with output files.
 % mask_threshold: Intensity value in the atlas corresponding to ROI
@@ -11,7 +11,7 @@ function [Std_CC_Avg_img,Std_CC_Max_img,Std_CC_AvgofMax_img]=generate_cc_map(fea
 
 disp('Loadind Files for Corelations...');
 tic
-ROI_dir_name=[feat_loc,'/',ROI_name,'_', num2str(mask_threshold)];
+ROI_dir_name=[feat_loc,'/rois/',ROI_name,'_', num2str(mask_threshold)];
 % NOTE: the same suffix is used for reading correlation files in the t-test code.
 file_suffix = [ROI_name];
 output_dir = [output_dir_base,'/',file_suffix,'/'];
@@ -120,8 +120,15 @@ if isempty(find(type_of_map==1,1))==0
     Avg_CC_img.hdr=RS_MASK.hdr;
     Avg_CC_img.img=Avg_CC_MAP;
     save_nii(Avg_CC_img,[output_dir,'/Avg_CC_map.nii.gz']);
+    
     % registration of map to standard space
-    avgmap2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',output_dir,'/Avg_CC_map.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',feat_loc, '/reg/filtered_func2standard.mat',' -out ',output_dir,'/Avg_CC_map_std.nii.gz',' -omat ',output_dir,'/Avg_CC_map_2_std.mat"'];
+    
+    transformation_file = [feat_loc, '/reg/filtered_func2standard.mat'];
+    if (fsl_transformation)
+        transformation_file = [feat_loc, '/reg/example_func2standard.mat'];
+    end    
+    
+    avgmap2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',output_dir,'/Avg_CC_map.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ', transformation_file,' -out ',output_dir,'/Avg_CC_map_std.nii.gz',' -omat ',output_dir,'/Avg_CC_map_2_std.mat"'];
     system(avgmap2std);
     
     func_mask2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',feat_loc,'/mask.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',output_dir,'/Avg_CC_map_2_std.mat',' -out ',output_dir,'/MASK_Avg_CC_map_std.nii.gz',' -omat ',output_dir,'/MASK_Avg_CC_map_2_std.mat"'];
@@ -132,65 +139,65 @@ if isempty(find(type_of_map==1,1))==0
 else
     Std_CC_Avg_img=[];
 end
-
-% for max map
-if isempty(find(type_of_map==2,1))==0
-    disp('Finding Max ROI Corelation..');    
-    Max_CC=nanmax(CORR);%max(CORR,[],1,'omitnan');
-    Max_CC_neg = nanmax(-CORR);
-    Max_CC = sign(Max_CC + Max_CC_neg).*nanmax(Max_CC, abs(Max_CC_neg));
-    Max_CC_MAP=zeros(size(RS_MASK.img));
-    for i=1:length(Max_CC(1,:))
-       Max_CC_MAP(RS_x(i),RS_y(i),RS_z(i))=Max_CC(i);
-    end
-    
-    disp('Writing Max Corelation Files..');
-    Max_CC_img.hdr=RS_MASK.hdr;
-    Max_CC_img.img=Max_CC_MAP;
-    save_nii(Max_CC_img,[output_dir,'/Max_CC_map.nii.gz']);
-    
-    % registration of map to standard space
-    maxmap2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',output_dir,'/Max_CC_map.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',feat_loc, '/reg/filtered_func2standard.mat',' -out ',output_dir,'/Max_CC_map_std.nii.gz',' -omat ',output_dir,'/Max_CC_map_2_std.mat"'];
-    system(maxmap2std);
-    
-    func_mask2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',feat_loc,'/mask.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',output_dir,'/Max_CC_map_2_std.mat',' -out ',output_dir,'/MASK_Max_CC_map_std.nii.gz',' -omat ',output_dir,'/MASK_Max_CC_map_2_std.mat"'];
-    system(func_mask2std);
-    %load standard space data of subject to construct 4D map    
-    Std_CC_Max=load_untouch_nii([output_dir,'/Max_CC_map_std.nii.gz']);
-    Std_CC_Max_img=Std_CC_Max.img;
-else
-    Std_CC_Max_img=[];
-end
-
-% for avgofmax map
-if isempty(find(type_of_map==3,1))==0
-    disp('Finding AvgOfMax ROI Corelation..');
-    Sort_CORR=sort(CORR,1,'descend');
-    AvgofMax_CC=mean(Sort_CORR(1:floor((length(CORR(:,1)))/10),:),1); %Average of maximum ~10% correlation coeficient values
-    AvgofMax_CC_neg = mean(Sort_CORR(floor((length(CORR(:,1)))*0.9):length(CORR(:,1)),:),1); %Average of maximum ~10% correlation coeficient values
-    AvgofMax_CC = sign(AvgofMax_CC + AvgofMax_CC_neg).*nanmax(AvgofMax_CC,abs(AvgofMax_CC_neg));
-    AvgofMax_CC_MAP=zeros(size(RS_MASK.img));
-    for i=1:length(AvgofMax_CC(1,:))
-      AvgofMax_CC_MAP(RS_x(i),RS_y(i),RS_z(i))=AvgofMax_CC(i);
-    end
-    
-    disp('Writing AvgOfMax Corelation Files..');
-    AvgofMax_CC_img.hdr=RS_MASK.hdr;
-    AvgofMax_CC_img.img=AvgofMax_CC_MAP;
-    save_nii(AvgofMax_CC_img,[output_dir,'/AvgofMax_CC_map.nii.gz']);
-    
-    % registration of map to standard space
-    avgmap2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',output_dir,'/AvgofMax_CC_map.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',feat_loc, '/reg/filtered_func2standard.mat',' -out ',output_dir,'/AvgofMax_CC_map_std.nii.gz',' -omat ',output_dir,'/AvgofMax_CC_map_2_std.mat"'];
-    system(avgmap2std);
-    
-    func_mask2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',feat_loc,'/mask.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',output_dir,'/AvgofMax_CC_map_2_std.mat',' -out ',output_dir,'/MASK_AvgofMax_CC_map_std.nii.gz',' -omat ',output_dir,'/MASK_AvgofMax_CC_map_2_std.mat"'];
-    system(func_mask2std);
-    %load standard space data of subject to construct 4D map    
-    Std_CC_AvgofMax=load_untouch_nii([output_dir,'/AvgofMax_CC_map_std.nii.gz']);
-    Std_CC_AvgofMax_img=Std_CC_AvgofMax.img;
-else
-    Std_CC_AvgofMax_img=[];
-end
+% 
+% % for max map
+% if isempty(find(type_of_map==2,1))==0
+%     disp('Finding Max ROI Corelation..');    
+%     Max_CC=nanmax(CORR);%max(CORR,[],1,'omitnan');
+%     Max_CC_neg = nanmax(-CORR);
+%     Max_CC = sign(Max_CC + Max_CC_neg).*nanmax(Max_CC, abs(Max_CC_neg));
+%     Max_CC_MAP=zeros(size(RS_MASK.img));
+%     for i=1:length(Max_CC(1,:))
+%        Max_CC_MAP(RS_x(i),RS_y(i),RS_z(i))=Max_CC(i);
+%     end
+%     
+%     disp('Writing Max Corelation Files..');
+%     Max_CC_img.hdr=RS_MASK.hdr;
+%     Max_CC_img.img=Max_CC_MAP;
+%     save_nii(Max_CC_img,[output_dir,'/Max_CC_map.nii.gz']);
+%     
+%     % registration of map to standard space
+%     maxmap2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',output_dir,'/Max_CC_map.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',feat_loc, '/reg/filtered_func2standard.mat',' -out ',output_dir,'/Max_CC_map_std.nii.gz',' -omat ',output_dir,'/Max_CC_map_2_std.mat"'];
+%     system(maxmap2std);
+%     
+%     func_mask2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',feat_loc,'/mask.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',output_dir,'/Max_CC_map_2_std.mat',' -out ',output_dir,'/MASK_Max_CC_map_std.nii.gz',' -omat ',output_dir,'/MASK_Max_CC_map_2_std.mat"'];
+%     system(func_mask2std);
+%     %load standard space data of subject to construct 4D map    
+%     Std_CC_Max=load_untouch_nii([output_dir,'/Max_CC_map_std.nii.gz']);
+%     Std_CC_Max_img=Std_CC_Max.img;
+% else
+%     Std_CC_Max_img=[];
+% end
+% 
+% % for avgofmax map
+% if isempty(find(type_of_map==3,1))==0
+%     disp('Finding AvgOfMax ROI Corelation..');
+%     Sort_CORR=sort(CORR,1,'descend');
+%     AvgofMax_CC=mean(Sort_CORR(1:floor((length(CORR(:,1)))/10),:),1); %Average of maximum ~10% correlation coeficient values
+%     AvgofMax_CC_neg = mean(Sort_CORR(floor((length(CORR(:,1)))*0.9):length(CORR(:,1)),:),1); %Average of maximum ~10% correlation coeficient values
+%     AvgofMax_CC = sign(AvgofMax_CC + AvgofMax_CC_neg).*nanmax(AvgofMax_CC,abs(AvgofMax_CC_neg));
+%     AvgofMax_CC_MAP=zeros(size(RS_MASK.img));
+%     for i=1:length(AvgofMax_CC(1,:))
+%       AvgofMax_CC_MAP(RS_x(i),RS_y(i),RS_z(i))=AvgofMax_CC(i);
+%     end
+%     
+%     disp('Writing AvgOfMax Corelation Files..');
+%     AvgofMax_CC_img.hdr=RS_MASK.hdr;
+%     AvgofMax_CC_img.img=AvgofMax_CC_MAP;
+%     save_nii(AvgofMax_CC_img,[output_dir,'/AvgofMax_CC_map.nii.gz']);
+%     
+%     % registration of map to standard space
+%     avgmap2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',output_dir,'/AvgofMax_CC_map.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',feat_loc, '/reg/filtered_func2standard.mat',' -out ',output_dir,'/AvgofMax_CC_map_std.nii.gz',' -omat ',output_dir,'/AvgofMax_CC_map_2_std.mat"'];
+%     system(avgmap2std);
+%     
+%     func_mask2std=['sh -c ". ${FSLDIR}//etc/fslconf/fsl.sh;${FSLDIR}/bin/flirt -in ',feat_loc,'/mask.nii.gz',' -ref ','${FSLDIR}//data/standard/MNI152_T1_2mm_brain.nii.gz',' -applyxfm -init ',output_dir,'/AvgofMax_CC_map_2_std.mat',' -out ',output_dir,'/MASK_AvgofMax_CC_map_std.nii.gz',' -omat ',output_dir,'/MASK_AvgofMax_CC_map_2_std.mat"'];
+%     system(func_mask2std);
+%     %load standard space data of subject to construct 4D map    
+%     Std_CC_AvgofMax=load_untouch_nii([output_dir,'/AvgofMax_CC_map_std.nii.gz']);
+%     Std_CC_AvgofMax_img=Std_CC_AvgofMax.img;
+% else
+%     Std_CC_AvgofMax_img=[];
+% end
 else
     disp('inappropriate ROI or mask threshold value for ');
     disp('function operation is teminated');

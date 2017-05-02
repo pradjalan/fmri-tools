@@ -19,7 +19,7 @@ if isempty(atlas)
 end
 
 if isempty(output_dir)
-    ROI_dir_name=[feat_loc,'/',ROI_name,'_',num2str(mask_threshold)];
+    ROI_dir_name=[feat_loc,'/rois/',ROI_name,'_',num2str(mask_threshold)];
     mkdir(ROI_dir_name);
 else
     ROI_dir_name = output_dir;
