@@ -36,6 +36,7 @@ else
 end
 voxel_coordinates = floor(voxel_coordinates);
 
+
 fclose(fid);
 
 for cur=1:length(names)

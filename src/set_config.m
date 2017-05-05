@@ -9,6 +9,7 @@ fsldirmpath = sprintf('%s/etc/matlab',fsldir);
 path(path, fsldirmpath); 
 
 
+
 filelists = '/mnt/project1/rawData/fMRI/incoming/BrainScape_fBIRN/NKI-RS-Lite/COINS/Filelists/';
 logfolder = '/mnt/project1/rawData/fMRI/incoming/BrainScape_fBIRN/NKI-RS-Lite/COINS/CodeResults/logs/';
 preprocessed_data_dir = '/mnt/project1/preProcessedData/COINS/withSliceTimingsFile/';
