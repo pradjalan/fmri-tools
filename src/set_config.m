@@ -1,6 +1,7 @@
 addpath('~/Public_writable/MATLAB/NIfTI_20140122/');
-addpath('~/Public_writable/MATLAB/');
+addpath(genpath('~/Public_writable/MATLAB/'));
 addpath('/mnt/project1/home1/cs5120287/git/fmri-tools/src/');
+addpath(genpath('/mnt/project1/Software/spm12/'));
 setenv('FSLDIR','/usr/share/fsl/5.0/');
 fsldir = '/usr/share/fsl/5.0/';
 

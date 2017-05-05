@@ -21,15 +21,20 @@ fid = fopen(config_file);
 xs = str2num(fgetl(fid));
 ys = str2num(fgetl(fid));
 zs = str2num(fgetl(fid));
+radii = str2num(fgetl(fid));
+names = strsplit(fgetl(fid));
+use_mm = str2num(fgetl(fid));
+
 xyzs = [xs; ys; zs];
 % xyzs = xyzs.';
 disp(size(xyzs));
-[~,voxel_coordinates] = map_coords(xyzs,mask_file);
+
+if ~use_mm
+    [~,voxel_coordinates] = map_coords(xyzs,mask_file);
+else
+    voxel_coordinates = xyzs;
+end
 voxel_coordinates = floor(voxel_coordinates);
-
-
-radii = str2num(fgetl(fid));
-names = strsplit(fgetl(fid));
 
 fclose(fid);
 
