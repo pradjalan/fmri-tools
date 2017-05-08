@@ -29,7 +29,7 @@ xyzs = [xs; ys; zs];
 % xyzs = xyzs.';
 disp(size(xyzs));
 
-if ~use_mm
+if use_mm
     [~,voxel_coordinates] = map_coords(xyzs,mask_file);
 else
     voxel_coordinates = xyzs;
