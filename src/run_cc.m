@@ -82,14 +82,14 @@ function run_cc(input_dir_base,feat_dir_list,ROI_names,mask_thresholds,atlas,fsl
 
                 ROI_dir_name=[feat_loc,'/rois/',ROI_name,'_',num2str(mask_threshold)];
                 
-                if ~(exist([feat_loc '/' ROI_dir_name '/filtered_func_ROI_masked.nii.gz'],'file'))
+%                 if ~(exist([feat_loc '/' ROI_dir_name '/filtered_func_ROI_masked.nii.gz'],'file'))
                  disp('Extracting ROI time series..');
                  if (~fsl_transformation)
                     roi_series_manual_reg(feat_loc,ROI_name,mask_threshold,atlas,'');
                  else
                     roi_series(feat_loc,ROI_name,mask_threshold,atlas,'');
                  end
-                end
+%                 end
                 
 %                 fprintf(logfile,'\nFinding Corelation Maps..');
                 %Copy the Directory Structure of Pre-Processed Data
