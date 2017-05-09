@@ -63,6 +63,10 @@ function run_cc(input_dir_base,feat_dir_list,ROI_names,mask_thresholds,atlas,fsl
                 feat_loc = strcat(scan_loc,'/rest.feat/');
             end
             
+            if ~exist([feat_loc '/filtered_func_data.nii.gz'], 'file')
+                continue;
+            end
+            
             reg_loc = [feat_loc '/reg/'];
             
             if (~fsl_transformation && ~( exist([reg_loc '/standard2filtered_func.mat'], 'file') ) )
