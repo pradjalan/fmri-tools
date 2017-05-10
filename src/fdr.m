@@ -139,7 +139,8 @@ ylabel('p_value');
 title(['FDR Correction: ' out_dir]);
 
 saveas(gcf,[out_dir '/fdr_plot_' name '.png']);
-close all;
+
+
 
 %Apply Mask to the t-values
 if length(t_file)~=0
