@@ -136,6 +136,7 @@ plot(xaxis,(10.^(-sorted_p_values)),'b');
 legend('q*(i/N)','p_values');
 xlabel('i/N');
 ylabel('p_value');
+ylim([0 1.1*max(qis)]);
 title(['FDR Correction: ' out_dir]);
 
 saveas(gcf,[out_dir '/fdr_plot_' name '.png']);
