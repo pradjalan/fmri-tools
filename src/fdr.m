@@ -50,18 +50,28 @@ sign_mask = sign(p_values);
 q_star_values = zeros(size(sorted_p_values));
 rejected = zeros(size(sorted_p_values));
 
-
 LENGTH=length(sorted_p_values);
+
+q_value = 0.01;
+
+%plot_data
+% qis = zeros(length(sorted_p_values);
+xaxis = (1:LENGTH)/LENGTH;
+qis = q_value*xaxis;
+
 
 %note that the q_values are to be stored as -log(q) and p values are
 %assumed to be stored as -log(p)
-q_value = 0.01;
+
 %FDR Correction and BH FDR control
 for i=1:length(sorted_p_values)
      %Finding q-value
      q_own = sorted_p_values(i) + log10(i) - log10(LENGTH);
      q_star_values(i) = q_own;     
 
+     %fill plot data
+%      qis(i) = q_value*(i/LENGTH);
+     
      % BH Control Procedure
      if sorted_p_values(i) >= -log10(i) + log10(LENGTH) - log10(q_value)
          rejected(i) = 1;
@@ -78,6 +88,8 @@ for i=abs(-length(sorted_p_values):-1)
         q_min = q_star_values(i);
     end
 end
+
+
 
 
 %Consider Rejected Hypothesis
@@ -114,6 +126,20 @@ save_nii(q_fdr_nii,[out_dir '/q_values_' out_file_name]);
 std_mask_img(mask_indices) = selected_p_values;
 fdr_mask_nii.img = std_mask_img; fdr_mask_nii.hdr = p_map_nii.hdr;
 save_nii(fdr_mask_nii,[out_dir '/fdr_mask_' out_file_name]);
+
+
+%plot figures
+figure('visible','off');
+hold on;
+plot(xaxis,qis,'r');
+plot(xaxis,(10^(-sorted_p_values)),'b--o');
+legend('q*(i/N)','p_values');
+xlabel('i/N');
+ylabel('p_value');
+title(['FDR Correction: ' out_dir]);
+
+saveas(gcf,[out_dir '/fdr_plot_' name '.png']);
+close all;
 
 %Apply Mask to the t-values
 if length(t_file)~=0
