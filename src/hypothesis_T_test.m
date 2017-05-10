@@ -23,9 +23,11 @@ for tn = 1:length(tom)
         files = '';
         while ischar(fline)
             fpath = [input_dir_base,'/',fline,'/',file_suffix];
+            if exist(fpath,'dir')
             [s,c] = system(['ls -la ',fpath]);
-            if isempty(strfind(c,type_of_map))==0
-                files = [files,' ',input_dir_base,'/',fline,'/',file_suffix,'/',type_of_map,'.nii.gz '];
+                if exist([fpath '/' type_of_map '.nii.gz'], 'file')
+                    files = [files,' ',input_dir_base,'/',fline,'/',file_suffix,'/',type_of_map,'.nii.gz '];
+                end
             end
             fline = fgetl(fid);
         end
