@@ -132,7 +132,7 @@ save_nii(fdr_mask_nii,[out_dir '/fdr_mask_' out_file_name]);
 figure('visible','off');
 hold on;
 plot(xaxis,qis,'r');
-plot(xaxis,(10^(-sorted_p_values)),'b--o');
+plot(xaxis,(10.^(-sorted_p_values)),'b--o');
 legend('q*(i/N)','p_values');
 xlabel('i/N');
 ylabel('p_value');
