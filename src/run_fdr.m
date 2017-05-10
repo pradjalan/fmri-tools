@@ -55,6 +55,9 @@ for ipdir=1:length(ipdirs)
     for tn = 1:length(tom)
         type_of_map = char(tom(tn));
         file_base = ['merged_cc_maps_' type_of_map '.nii.gz'];
+        if strfind(input_dir_root,'TwoSided_T_Tests')
+            file_base = [ type_of_map '.nii.gz'];
+        end
         ROIs = strsplit(ROI_names);
             for rn=1:length(ROIs)
                 ROI_name = char(ROIs(rn));
