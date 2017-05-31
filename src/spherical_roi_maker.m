@@ -47,15 +47,6 @@ for cur=1:length(names)
  z = xyz(3);
  radius = radii(cur);
 
-% Create Cubical ROI
-    outfile = [out_dir '/' roi '_cuboid_' num2str(radius) '.nii.gz'];
-    roi_command = ['fslroi ' mask_file ' ' outfile ' ' num2str(x-radius) ' ' num2str(2*radius+1) ' ' num2str(y-radius) ' ' num2str(2*radius+1) ' ' num2str(z-radius) ' ' num2str(2*radius+1) ];
-    [s,~] =  system(['sh -c ". ${FSLDIR}/etc/fslconf/fsl.sh;${FSLDIR}/bin/' roi_command '  "']);
-    
-    if s~=0
-        disp('Problem Creating ROI:');
-    end
-
     disp(['ROI: ' roi ';  Coordinates: ' num2str(x) ',' num2str(y) ',' num2str(z) ';  ' 'Radius: ' num2str(radius)]);
  
   % Dimensions of standard mask file
