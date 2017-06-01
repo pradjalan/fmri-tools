@@ -4,7 +4,7 @@ types_of_map = strsplit('Avg_CC_map_std');
 ROIs = strsplit(ROI_names);
 for tn=1:length(types_of_map)
     type_of_map = char(types_of_map(tn));
-    for rn=1:length(ROIs)
+    parfor rn=1:length(ROIs)
         ROI_name = char(ROIs(rn));
         disp(ROI_name);
         disp(type_of_map);
@@ -92,13 +92,21 @@ for tn=1:length(types_of_map)
         pseudo_zero = realmin('double');
         p_CC_map(find(p_CC_map < pseudo_zero)) = pseudo_zero;
         
+        
+        nii_T_value_CC_map = std_mask;
+        nii_p_value_CC_map = std_mask;
+        nii_mean_value_CC_map = std_mask;
+        nii_stddev_value_CC_map = std_mask;
+        nii_log_p_value_CC_map = std_mask;
+        
+        
         disp([out_dir,'/',out_file_name_T]);
-        nii_T_value_CC_map.hdr=std_mask.hdr; nii_T_value_CC_map.img=T_value_CC_map; save_nii(nii_T_value_CC_map,[out_dir,'/',out_file_name_T]); %%%% changes to be made in this line
-        nii_p_value_CC_map.hdr=std_mask.hdr; nii_p_value_CC_map.img=sign(T_value_CC_map).*abs(p_CC_map); save_nii(nii_p_value_CC_map,[out_dir,'/',out_file_name_p]);
+        nii_T_value_CC_map.hdr=std_mask.hdr; nii_T_value_CC_map.img=T_value_CC_map; save_untouch_nii(nii_T_value_CC_map,[out_dir,'/',out_file_name_T]); %%%% changes to be made in this line
+        nii_p_value_CC_map.hdr=std_mask.hdr; nii_p_value_CC_map.img=sign(T_value_CC_map).*abs(p_CC_map); save_untouch_nii(nii_p_value_CC_map,[out_dir,'/',out_file_name_p]);
         disp(['T_value and p_value map saved in nii format at: ',out_dir])
 
         p_CC_map = sign(T_value_CC_map).*(-log10(abs(p_CC_map)));
-        nii_log_p_value_CC_map.hdr=std_mask.hdr; nii_log_p_value_CC_map.img=p_CC_map; save_nii(nii_log_p_value_CC_map,[out_dir,'/log_',out_file_name_p]);
+        nii_log_p_value_CC_map.hdr=std_mask.hdr; nii_log_p_value_CC_map.img=p_CC_map; save_untouch_nii(nii_log_p_value_CC_map,[out_dir,'/log_',out_file_name_p]);
         disp(['log p_value map saved in nii format at ',out_dir])
         
         
