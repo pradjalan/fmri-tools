@@ -103,17 +103,17 @@ for tn = 1:length(tom)
         nii_stddev_value_CC_map = std_mask;
         nii_log_p_value_CC_map = std_mask;
         
-        nii_T_value_CC_map.hdr=std_mask.hdr; nii_T_value_CC_map.img=T_value_CC_map; save_nii(nii_T_value_CC_map,[out_dir,'/',out_file_name_T]); %%%% changes to be made in this line
-        nii_p_value_CC_map.hdr=std_mask.hdr; nii_p_value_CC_map.img=sign(T_value_CC_map).*abs(p_CC_map); save_nii(nii_p_value_CC_map,[out_dir,'/',out_file_name_p]);
+        nii_T_value_CC_map.hdr=std_mask.hdr; nii_T_value_CC_map.img=T_value_CC_map; save_untouch_nii(nii_T_value_CC_map,[out_dir,'/',out_file_name_T]); %%%% changes to be made in this line
+        nii_p_value_CC_map.hdr=std_mask.hdr; nii_p_value_CC_map.img=sign(T_value_CC_map).*abs(p_CC_map); save_untouch_nii(nii_p_value_CC_map,[out_dir,'/',out_file_name_p]);
         disp(['T_value map & p_value map saved in nii format at ',out_dir])
 
         
         p_CC_map = sign(T_value_CC_map).*(-log10(abs(p_CC_map)));
-        nii_log_p_value_CC_map.hdr=std_mask.hdr; nii_log_p_value_CC_map.img=p_CC_map; save_nii(nii_log_p_value_CC_map,[out_dir,'/log_',out_file_name_p]);
+        nii_log_p_value_CC_map.hdr=std_mask.hdr; nii_log_p_value_CC_map.img=p_CC_map; save_untouch_nii(nii_log_p_value_CC_map,[out_dir,'/log_',out_file_name_p]);
         disp(['log p_value map saved in nii format at ',out_dir])
         
-        nii_mean_value_CC_map.hdr=std_mask.hdr; nii_mean_value_CC_map.img=Mean_CC_map; save_nii(nii_mean_value_CC_map,[out_dir,'/',out_file_name_mean]); %%%% changes to be made in this line
-        nii_stddev_value_CC_map.hdr=std_mask.hdr; nii_stddev_value_CC_map.img=Std_dev_CC_map; save_nii(nii_stddev_value_CC_map,[out_dir,'/',out_file_name_stddev]);
+        nii_mean_value_CC_map.hdr=std_mask.hdr; nii_mean_value_CC_map.img=Mean_CC_map; save_untouch_nii(nii_mean_value_CC_map,[out_dir,'/',out_file_name_mean]); %%%% changes to be made in this line
+        nii_stddev_value_CC_map.hdr=std_mask.hdr; nii_stddev_value_CC_map.img=Std_dev_CC_map; save_untouch_nii(nii_stddev_value_CC_map,[out_dir,'/',out_file_name_stddev]);
         disp(['Mean map & StdDev map saved in nii format at ',out_dir])
 
 
