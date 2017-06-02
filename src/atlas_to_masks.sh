@@ -3,7 +3,5 @@
 mkdir -p $4
 for i in `seq $2 $3`; do
 	echo $i
-	n="$i_$5.nii.gz"
-	echo $n
-	fslmaths $1 -thr $i -uthr $i -bin $4/$n
+	fslmaths $1 -thr $i -uthr $i -bin $4/$i_lobular.nii.gz
 done
