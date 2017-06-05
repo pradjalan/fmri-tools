@@ -55,6 +55,7 @@ for tn = 1:length(tom)
         disp('Loading Merged Correlation Maps..');
         if ~exist('file_name','file')
             disp(['merged cc map file does not exist... Skipping ROI: ' ROI_name]);
+            continue;
         end
         CC_map_4D=load_untouch_nii(file_name);
         CC_map_4D_img=CC_map_4D.img;
