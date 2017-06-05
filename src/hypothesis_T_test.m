@@ -16,7 +16,7 @@ for tn = 1:length(tom)
         system(['mkdir -p ',out_dir]);
         
         file_name = [out_dir,'/merged_cc_maps_',type_of_map,'.nii.gz'];
-%         if ~exist(file_name,'file')
+        if ~exist(file_name,'file')
         disp('Creating File list..');
         fid = fopen(cc_folder_list);
         fline = fgetl(fid);
@@ -42,7 +42,7 @@ for tn = 1:length(tom)
         
         system(merge_cmd);
         % file_name = [out_dir,'/merged_cc_maps.nii.gz'];
-%         end
+        end
         
         
         [~,name,extension]=fileparts(file_name);
