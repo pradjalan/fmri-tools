@@ -53,6 +53,9 @@ for tn = 1:length(tom)
 
         %% Mean and standard deviation of each voxel across all subjects
         disp('Loading Merged Correlation Maps..');
+        if ~exist('file_name','file')
+            disp(['merged cc map file does not exist... Skipping ROI: ' ROI_name]);
+        end
         CC_map_4D=load_untouch_nii(file_name);
         CC_map_4D_img=CC_map_4D.img;
 
