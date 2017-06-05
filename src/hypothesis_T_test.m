@@ -6,7 +6,7 @@ for tn = 1:length(tom)
     type_of_map = char(tom(tn));
 
     ROIs = strsplit(ROI_names);
-    for rn=1:length(ROIs)
+    parfor rn=1:length(ROIs)
         ROI_name = char(ROIs(rn));
         disp(['Type of Map: ' type_of_map ';  ROI: ' ROI_name]);
         % type_of_map = Avg_CC_map_std | AvgofMax_CC_map_std | Max_CC_map_std
@@ -53,7 +53,7 @@ for tn = 1:length(tom)
 
         %% Mean and standard deviation of each voxel across all subjects
         disp('Loading Merged Correlation Maps..');
-        if ~exist('file_name','file')
+        if ~exist(file_name,'file')
             disp(['merged cc map file does not exist... Skipping ROI: ' ROI_name]);
             continue;
         end
