@@ -6,7 +6,7 @@ for tn = 1:length(tom)
     type_of_map = char(tom(tn));
 
     ROIs = strsplit(ROI_names);
-    for rn=1:length(ROIs)
+    parfor rn=1:length(ROIs)
         ROI_name = char(ROIs(rn));
         disp(['Type of Map: ' type_of_map ';  ROI: ' ROI_name]);
         % type_of_map = Avg_CC_map_std | AvgofMax_CC_map_std | Max_CC_map_std
@@ -37,7 +37,7 @@ for tn = 1:length(tom)
         
         disp('Merging CC_map files..');
         
-        merge_cmd = ['sh -c ". ${FSLDIR}/etc/fslconf/fsl.sh;${FSLDIR}/bin/fslmerge -t ',file_name,' ',files,' "'];
+        merge_cmd = ['sh -c ". ${FSLDIR}/etc/fslconf/fsl.sh;${FSLDIR}/bin/fslmerge -t ',filea_name,' ',files,' "'];
 %         disp(merge_cmd);
         
         system(merge_cmd);
