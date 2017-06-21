@@ -37,7 +37,7 @@ for tn = 1:length(tom)
         
         disp('Merging CC_map files..');
         
-        merge_cmd = ['sh -c ". ${FSLDIR}/etc/fslconf/fsl.sh;${FSLDIR}/bin/fslmerge -t ',filea_name,' ',files,' "'];
+        merge_cmd = ['sh -c ". ${FSLDIR}/etc/fslconf/fsl.sh;${FSLDIR}/bin/fslmerge -t ',file_name,' ',files,' "'];
 %         disp(merge_cmd);
         
         system(merge_cmd);
