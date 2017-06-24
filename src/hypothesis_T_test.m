@@ -6,7 +6,7 @@ for tn = 1:length(tom)
     type_of_map = char(tom(tn));
 
     ROIs = strsplit(ROI_names);
-    parfor rn=1:length(ROIs)
+    for rn=1:length(ROIs)
         ROI_name = char(ROIs(rn));
         disp(['Type of Map: ' type_of_map ';  ROI: ' ROI_name]);
         % type_of_map = Avg_CC_map_std | AvgofMax_CC_map_std | Max_CC_map_std
@@ -57,6 +57,7 @@ for tn = 1:length(tom)
             disp(['merged cc map file does not exist... Skipping ROI: ' ROI_name]);
             continue;
         end
+        disp(['loading: ' file_name]);
         CC_map_4D=load_untouch_nii(file_name);
         CC_map_4D_img=CC_map_4D.img;
 
