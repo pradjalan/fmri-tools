@@ -1,4 +1,4 @@
-function compute_roi_intersection(input_dir,rois_dir,output_dir,mask_file)
+function compute_roi_intersection(input_dir,rois,rois_dir,output_dir,mask_file)
 %config file contains coordinates, radii and names
 
 
@@ -8,7 +8,13 @@ if length(mask_file)==0
     mask_file = [fsldir,'/data/standard/MNI152_T1_2mm_brain_mask.nii.gz'];
 end
 
-rois = strrep(strsplit(strtrim(ls(rois_dir))),'.nii.gz','');
+
+% rois = strrep(strsplit(strtrim(ls(rois_dir))),'.nii.gz','');
+rois = strsplit(rois);
+
+% lsr = 'AccumbensR_Addiction_3.nii.gz AccumensL_Addiction_3.nii.gz AmygdalaL_Addiction_4.nii.gz AmygdalaR_Addiction_4.nii.gz HippocampusL_Addiction_4.nii.gz HippocampusR_Addiction_4.nii.gz IPLL_DMN_4.nii.gz IPLR_DMN_4.nii.gz MPFC_DMN_3.nii.gz PCC_HO_4.nii.gz';
+% rois = strrep(strsplit(strtrim(lsr)),'.nii.gz','');
+
 parameters = strsplit('TotalVoxels,NonZeroVoxels,Volume,Mean,Percentile100(Max),Percentile90,Percentile75,Percentile50(Median),Percentile25,Percentile10,Percentile0(Min),MeanPositive,MeanNegative',',');
 
 out_matrix = zeros(length(rois),length(rois), length(parameters));
@@ -17,7 +23,7 @@ for r=1:length(rois)
     cur_roi = strrep(char(rois(r)),'.nii.gz','');
     disp(cur_roi);
 %     input_file = [input_dir '/' cur_roi '_logq_value0002.nii.gz'];
-    input_file = [input_dir '/q_values_' cur_roi '_Avg_CC_map_std.nii.gz'];
+    input_file = [input_dir '/' cur_roi '/q_values_' cur_roi '_Avg_CC_map_std.nii.gz'];
 % fid = fopen(out_file,'w');
 % fprintf(fid,'ROI_name,TotalVoxels,NonZeroVoxels,Volume,Mean,Percentile100(Max),Percentile90,Percentile75,Percentile50(Median),Percentile25,Percentile10,Percentile0(Min),MeanPositive,MeanNegative\n');
 
@@ -43,6 +49,7 @@ for r=1:length(rois)
      [s,~] =  system(['sh -c ". ${FSLDIR}/etc/fslconf/fsl.sh;${FSLDIR}/bin/' mul_command '  "']);
         if s~=0
             disp('Problem Creating ROI series:');
+            disp(mul_command);
         end
 
     [s,~] =  system(['sh -c ". ${FSLDIR}/etc/fslconf/fsl.sh;${FSLDIR}/bin/' mul_neg_command '  "']);
@@ -109,9 +116,9 @@ save([output_dir '/data_matrix.mat'],'out_matrix');
 for p = 1:length(parameters)
     figure('visible','off');
     M = out_matrix(:,:,p);
-    imagesc(M.');
+    imagesc(M.', [-10 10]);
     set(gca,'Ytick',1:length(rois));
-    set(gca,'YtickLabel',rois);
+    set(gca,'YtickLabel',strrep(rois,'_','\_'));
     title(parameters(p));
     colorbar;
     saveas(gca,[output_dir '/' char(parameters(p)) '.png']);
