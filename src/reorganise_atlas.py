@@ -5,7 +5,7 @@ import os, scipy.io
 import copy
 
 
-atlas_name = 'IITD-LobeCellType-TalairachCerebellar'
+atlas_name = 'IITD-CellType_GyrusLobe-TalairachCerebellar'
 
 standard_path = '/usr/share/fsl/5.0/data/standard/MNI152_T1_2mm_brain.nii.gz'
 
