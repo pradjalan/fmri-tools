@@ -1,13 +1,14 @@
-function create_atlas(config_file, atlas_path, out_dir)
+function create_atlas(config_file, out_dir)
 conf = csvread(config_file);
 
-
+atlas_path = '/usr/local/fsl/data/atlases/Talairach/Talairach-labels-2mm.nii.gz';
 atlas = load_untouch_nii(atlas_path);
 atlas_data = atlas.img;
 my_atlas_data = zeros(size(atlas_data));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% this code is optional, remove if not needed
-atlas_cerbellar = load_untouch_nii('/usr/local/fsl/data/atlases/Cerebellum/Cerebellum-MNIflirt-maxprob-thr50-2mm.nii.gz');
+atlas_path_cerebellar = '/usr/local/fsl/data/atlases/Cerebellum/Cerebellum-MNIflirt-maxprob-thr50-2mm.nii.gz';
+atlas_cerbellar = load_untouch_nii(atlas_path_cerebellar);
 atlas_data_cerbellar = atlas_cerbellar.img;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
