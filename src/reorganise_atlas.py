@@ -53,8 +53,10 @@ for child in atlas_tree.find('data').getchildren():
 
 	if cell_type!='*':
 		roi_name += '*.*.*.'+cell_type
+ 	elif gyrus != '*':
+ 		roi_name += '*.' + gyrus + '.*.*'
 	else:
-		roi_name += lobe + '.' + gyrus + '.*.*'
+		roi_name += lobe  + '.*.*.*'
 
 
 	
