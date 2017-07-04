@@ -14,11 +14,11 @@ atlas_data_cerbellar = atlas_cerbellar.img;
 
 
 
-
+cerebellum_offset = length(conf) - 28;
 for i=1:length(conf)
     
     %%%%%%%%%%%%%%%%%This part of the code is optional
-    if conf(i,2)>186
+    if i>cerebellum_offset
         my_atlas_data(find(atlas_data_cerbellar==conf(i,1))) = conf(i,2);
         continue
     end
