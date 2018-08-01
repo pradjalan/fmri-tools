@@ -24,8 +24,8 @@ if [ $# -eq 3 ];then
 
 	fi
     
-elif [ $# -eq 1 ] && [ "$1" == "--help" ];then
-
+# elif [ $# -eq 1 ] && [ "$1" == "--help" ];then
+else 
 	echo "This code is implementation of FARM by Dr. Rahul Garg"
 	echo "Usage: bash farm.sh <fMRI_filename> <lambda_vale> <output_foldername>"
 	echo "It will output 5 files-"
@@ -35,7 +35,6 @@ elif [ $# -eq 1 ] && [ "$1" == "--help" ];then
 	echo "4) Residuals\n (nii file)"
 	echo "5) Model file storing the A matrix (csv file)"
 
-else
-	echo "Incorrect arguments"
+# else
 fi
 
