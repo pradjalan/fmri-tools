@@ -1,10 +1,14 @@
-function FARM(fMRI_filename,lambda,output_foldername, thres)
+function FARM(fMRI_filename, lambda, output_foldername, thres, dirname)
 
 	fMRI_filename  = char(fMRI_filename);
 	
 	% add library path
-	library_location  = char('/usr/lib/granger/');
-	addpath(library_location);
+	% library_location  = char('/usr/lib/granger/');
+	disp(sprintf('Dirname is %s', dirname))
+	addpath(dirname);
+	path = sprintf('%s/../utils/nifti', dirname);
+	disp(sprintf('Adding path %s', path));
+	addpath(path);
 	
 	% load nii fmri file 
 	intial_location=load_nii(fMRI_filename);
