@@ -22,9 +22,12 @@ function [b,steps,G,a2,error,drop] = farmlarsen(X, y, delta, stop, Gram, storepa
 %   elastic net. J. Royal Stat. Soc. B. 67(2):301-320, 2005. 
 %
 
+
+fprintf('farmlarsen called with delta=%g, stop=%d, storepath=%d, verbose=%d, g=%g\n', delta, stop, storepath, verbose, g);
+G=0;
 %% algorithm setup
 [n p] = size(X);
-verbose =1;
+% verbose =1;
 % Determine maximum number of active variables
 if delta < eps
   maxVariables = min(n,p); %LASSO
@@ -66,7 +69,7 @@ deltar = 0; % change in residual
 deltax = 0; % change in norm x
 G = 0;
 if verbose
-  %fprintf('Step\tAdded\tDropped\t\tActive set size\n');
+  fprintf('Step\tAdded\tDropped\t\tActive set size\n');
 end
 
 %% LARS main loop
@@ -86,7 +89,7 @@ while length(A) < maxVariables && ~stopCond && step < maxSteps
       [R] = cholinsert1(R, X(:,cidx), X(:,A), delta);
     end
     if verbose
-      %fprintf('%d\t\t%d\t\t\t\t\t%d\n', step, cidx, length(A) + 1);
+      fprintf('%d\t\t%d\t\t\t\t\t%d\n', step, cidx, length(A) + 1);
     end
     A = [A cidx]; % add to active set
     I(cidxI) = []; % ...and drop from inactive set
@@ -194,9 +197,11 @@ while length(A) < maxVariables && ~stopCond && step < maxSteps
   a1 = norm(b,1);
   a2 = norm((Y-Y_new),2);
   if step > 2
+      Gprev = G;
       G = -((upper1-a2)/(normb- a1));
       error = a2/norm(Y_new,2);
       if G < g
+	  fprintf('Breaking because G=%g, Gprev=%g, active set size %d\n', G, Gprev, length(A));
           break
       end
   end
@@ -222,3 +227,37 @@ if step == maxSteps
   warning('SpaSM:larsen', 'Forced exit. Maximum number of steps reached.');
 end
 
+end
+		  
+%% Fast Cholesky insert and remove functions
+% Updates R in a Cholesky factorization R'R = X'X of a data matrix X. R is
+% the current R matrix to be updated. x is a column vector representing the
+% variable to be added and X is the data matrix containing the currently
+% active variables (not including x).
+function R = cholinsert1(R, x, X, lambda)
+diag_k = (x'*x + lambda)/(1 + lambda); % diagonal element k in X'X matrix
+if isempty(R)
+  R = sqrt(diag_k);
+else
+  col_k = x'*X/(1 + lambda); % elements of column k in X'X matrix
+  R_k = R'\col_k'; % R'R_k = (X'X)_k, solve for R_k
+  R_kk = sqrt(diag_k - R_k'*R_k); % norm(x'x) = norm(R'*R), find last element by exclusion
+  R = [R R_k; [zeros(1,size(R,2)) R_kk]]; % update R
+end
+end
+% Deletes a variable from the X'X matrix in a Cholesky factorisation R'R =
+% X'X. Returns the downdated R. This function is just a stripped version of
+% Matlab's qrdelete.
+function R = choldelete(R,j)
+R(:,j) = []; % remove column j
+n = size(R,2);
+for k = j:n
+  p = k:k+1;
+  [G,R(p,k)] = planerot(R(p,k)); % remove extra element in column
+  if k < n
+    R(p,k+1:n) = G*R(p,k+1:n); % adjust rest of row
+  end
+end
+R(end,:) = []; % remove zero'ed out row
+    
+end

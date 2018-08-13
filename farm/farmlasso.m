@@ -116,7 +116,7 @@ if (n/p) > 10 && p < 1000
 end
 
 %% Run the LARS algorithm
-[b,steps,G,a2,error,drop] = farmlarsen(X, y, 0, stop, Gram, storepath, verbose,Error,g);
+[b,steps,G,a2,error,drop] = farmlarsen(X, y, 0, stop, Gram, storepath, verbose, g);
 
 %% Compute auxilliary measures
 if nargout == 2 % only compute if asked for

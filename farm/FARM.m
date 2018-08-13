@@ -58,7 +58,8 @@ function FARM(fMRI_filename, lambda, output_foldername, thres, dirname)
         new1 = zscore(temp2);
         
 		% Lasso function
-        [beta ,steps,G,residuals,error,drop] = farmlasso(new1, new, 0, false,false,10^(-9),double(lambda));
+	fprintf('Calling  farmlasso with g=%g\n', sscanf(lambda, '%g'));
+        [beta ,steps,G,residuals,error,drop] = farmlasso(new1, new, 100, false, 0, 0, sscanf(lambda, '%g'));
 
         if i1 == 1
             Beta(i1,1) = 0;
