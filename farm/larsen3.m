@@ -21,6 +21,11 @@
 %
 % Usage:  [b, g_out, steps] = larsen(flat_mri, model_index, g, max_l1, min_l2, max_ss, max_steps)
 %
+% 7. Another bug (actually not a bug but improvement) in the original lasso algorithm: If the matrix of active set becomes close to singular
+%    then the algorithm becomes numerically unstable and sometimes give incorrect results. Fixed this by adding the following condition  
+%    if (cond(Gram) > 1e2) then skip the current variable and remove it from inactive set. This is a topic for further research.
+%    Now the algorithm is robust and gives good results and is also fast.
+%
 %
 
 
@@ -59,24 +64,31 @@ G = g+1;
 while (length(A) < maxVariables) && (step < max_steps) && (G > g) && (err > min_l2) && (l1 < max_l1)
 
     if lassoCond
-		I = [I A(dropIdx)];
-		A(dropIdx) = [];
-	end
+        I = [I A(dropIdx)];
+        A(dropIdx) = [];
+    end
 
-	r = y - mu;
-	c = X' * r;
-	[cmax cidxI] = max(abs(c(I)));
+    r = y - mu;
+    c = X' * r;
+    [cmax cidxI] = max(abs(c(I)));
     % disp(sprintf('c(A) max, min; c(I) %g %g %g %g\n', max(c(A)), min(c(A)), max(c(I)), min(c(I))));
-	cidx = I(cidxI);
-	if ~lassoCond 
-		A = [A cidx];
-		I(cidxI) = [];
-	else
-		lassoCond = 0;
-	end
+    cidx = I(cidxI);
+    if ~lassoCond 
+        A = [A cidx];
+        I(cidxI) = [];
+    else
+        lassoCond = 0;
+    end
 
-	Gram = X(:, A)' * X(:, A);
-	b_OLS = Gram \ (X(: , A)' * y);
+    Gram = X(:, A)' * X(:, A);
+    % For a variant of algorithm that works on well conditioned matrices
+    if (cond(Gram) > 1e2)
+      disp(sprintf('Index (%d %d) makes the matrix ill conditioned. Dropping', cidx, find(A == cidx)));
+      A(find(A == cidx)) = [];
+      continue
+    end
+
+    b_OLS = Gram \ (X(: , A)' * y);
     b_2 = inv(Gram) * (X(: , A)' * y);
     sb = sign(b(A));
     sb(length(b(A))) = sign(c(cidx));
@@ -84,35 +96,35 @@ while (length(A) < maxVariables) && (step < max_steps) && (G > g) && (err > min_
     % display(b_d ./ (b(A) - b_OLS));
     % disp(sprintf('Step %d, condition %g err in b_OLS %g\n', step, cond(Gram), norm(b_OLS - b_2)/norm(b_OLS)));
     
-	d = X(: , A) * b_OLS - mu;
+    d = X(: , A) * b_OLS - mu;
 
-	gamma_tilde = b(A(1: end)) ./ (b(A(1: end)) - b_OLS(1: end, 1));
-	gamma_tilde(gamma_tilde <= 0) = inf;
-	[gamma_tilde dropIdx] = min(gamma_tilde);
+    gamma_tilde = b(A(1: end)) ./ (b(A(1: end)) - b_OLS(1: end, 1));
+    gamma_tilde(gamma_tilde <= 0) = inf;
+    [gamma_tilde dropIdx] = min(gamma_tilde);
 
-	if isempty(I)
-		gamma = 1;
-	else
-		cd = X'*d;
-		temp = [(c(I) - cmax) ./ (cd(I) - cmax); (c(I) + cmax) ./ (cd(I) + cmax)];
+    if isempty(I)
+        gamma = 1;
+    else
+        cd = X'*d;
+        temp = [(c(I) - cmax) ./ (cd(I) - cmax); (c(I) + cmax) ./ (cd(I) + cmax)];
         inds1 = find(temp>0);
-		[temp2 inds2] = sort(temp(temp > 0));
+        [temp2 inds2] = sort(temp(temp > 0));
         % display('temp2(1:10)'); display(temp(A)); display(temp2(1:10)); display(inds2(1:10));
-		if isempty(temp2)
-			printf('Error no +ve direction\n');
-			return;
-		end
-		gamma = temp2(1);
+        if isempty(temp2)
+            printf('Error no +ve direction\n');
+            return;
+        end
+        gamma = temp2(1);
         gamma2 = gamma;
-	end
-
-	if gamma_tilde < gamma
-		lassoCond = 1;
-		gamma = gamma_tilde;
     end
-	b_prev = b;
+
+    if gamma_tilde < gamma
+        lassoCond = 1;
+        gamma = gamma_tilde;
+    end
+    b_prev = b;
     sb_prev = sign(b_prev);
-	b(A) = b(A) + gamma*(b_OLS - b(A));
+    b(A) = b(A) + gamma*(b_OLS - b(A));
     sb = sign(b);
     % delta = find(sb - sb_prev);
     % if (length(delta) > 1) 
@@ -138,20 +150,20 @@ while (length(A) < maxVariables) && (step < max_steps) && (G > g) && (err > min_
     disp(sprintf('Step %d, size(A) %d, err %g, L1 %g, G %g\n', step, length(A), err, l1, G));
     % display(b(A)); 
     % display(A);
-	check = (X(:, A)' * X(:, A) * b(A) - X(:, A)' * y) ./ (err * sign(b(A))); % = -g
-	mx = max(check);
-	mn = min(check);
-	ch = (mx - mn) * 200 / abs(mx + mn);
-	% disp(sprintf('%d, %d, %f, %f, %f %g %g %g\n', step, size(A, 2), mx, mn, ch, gamma, gamma_tilde, gamma2));
-	% if step > 1
-			% G = -((upper1 - a2) / (normb - a1));
-	%		if G < g
-	%			break;
-	%		end
+    check = (X(:, A)' * X(:, A) * b(A) - X(:, A)' * y) ./ (err * sign(b(A))); % = -g
+    mx = max(check);
+    mn = min(check);
+    ch = (mx - mn) * 200 / abs(mx + mn);
+    % disp(sprintf('%d, %d, %f, %f, %f %g %g %g\n', step, size(A, 2), mx, mn, ch, gamma, gamma_tilde, gamma2));
+    % if step > 1
+            % G = -((upper1 - a2) / (normb - a1));
+    %        if G < g
+    %            break;
+    %        end
     % end
     
-    %	upper1 = a2;
-    %	normb = a1;
+    %    upper1 = a2;
+    %    normb = a1;
 end
 
 if (err < min_l2) 
@@ -185,7 +197,7 @@ Yh = y - XA * inv(XA' * XA) * XA' * y;
 Z = g * XA * inv(XA' * XA) * sg;
 
 p = 1 - Z' * Z;
-q = Yh' * Z + Z' * Yh; 													% Yh' * Z + Z' * Yh = 2 * Yh' * Z
+q = Yh' * Z + Z' * Yh;                                                     % Yh' * Z + Z' * Yh = 2 * Yh' * Z
 r = -Yh' * Yh;
 
 a21 = (-q + sqrt(q * q - 4 * p * r)) / (2 * p);
