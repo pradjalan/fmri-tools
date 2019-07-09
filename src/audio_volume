@@ -1,0 +1,31 @@
+#! /usr/bin/octave -qf
+# a sample Octave program
+# printf ("Hello, world!\n");
+
+if (nargin ~= 3)
+    disp(sprintf("Usage: %s <audio file> <tr (msecs)> <output file>\n", program_name ()));
+    exit(-1);
+end
+
+arg_list = argv();
+audio_file = arg_list{1};
+tr = sscanf(arg_list{2}, '%d');
+output_file = arg_list{3};
+
+if (~exist(audio_file))
+    disp(sprintf('Input file %s does not exist. Exiting..\n', audio_file));
+    exit(-1);
+end
+[y, fs] = audioread (audio_file);
+nframes = length(y)/fs*1000/tr;
+spf = tr/1000*fs;
+
+disp(sprintf('Generating %s from %s using a TR of %d msec (total %d fraems)\n', output_file, audio_file, tr, nframes));
+
+for i = 0:(nframes-1)
+    data = y( (i*spf:(i+1)*spf)+1);
+    o(i+1,1) = (sum(data.*data)/spf);
+end
+o(:,2) = sqrt(o(:,1));
+csvwrite(output_file, o);
+
