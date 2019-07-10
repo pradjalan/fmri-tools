@@ -4,6 +4,8 @@
 
 cctd = getenv('CCTDIR')
 addpath([cctd '/src/']);
+addpath([cctd '/utils/']);
+addpath([cctd '/utils/nifti/']);
 set_config
 
 usage_message = 'Usage: fdr <input file> [--mask <mask file>] [--vol or -v <volume number>] [-o <output file>]';

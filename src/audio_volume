@@ -27,5 +27,6 @@ for i = 0:(nframes-1)
     o(i+1,1) = (sum(data.*data)/spf);
 end
 o(:,2) = sqrt(o(:,1));
+o(:,3) = log(o(:,1));
 csvwrite(output_file, o);
 
