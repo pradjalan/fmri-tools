@@ -1,0 +1,99 @@
+#! /usr/bin/octave -qf
+# a sample Octave program
+# printf ("Hello, world!\n");
+
+if (nargin ~= 5)
+    disp(sprintf("Usage: %s <fmri_file> <timeseries.csv> <mask> <maxlag> <output_prefix>\n", program_name ()));
+    disp('Finds the best lag within +/- <maxlag> for each ROI in the <mask> with the corresponding time series in the <timeseries.csv>');
+    exit(1);
+end
+
+if exist('~/.octaverc')
+    source('~/.octaverc')
+end
+myaddpaths;
+
+arg_list = argv();
+fmri_file = arg_list{1};
+ts_file = arg_list{2};
+mask_file = arg_list{3};
+maxlag = sscanf(arg_list{4}, '%d');
+output_prefix = arg_list{5};
+
+if (~exist(fmri_file))
+    disp(sprintf('Input file %s does not exist. Exiting..\n', fmri_file));
+    exit(-1);
+end
+
+if (~exist(mask_file))
+    disp(sprintf('Input file %s does not exist. Exiting..\n', mask_file));
+    exit(-1);
+end
+if (~exist(ts_file))
+    disp(sprintf('Input file %s does not exist. Exiting..\n', ts_file));
+    exit(-1);
+end
+
+f1 = load_untouch_nii(fmri_file);
+f2 = load_untouch_nii(mask_file);
+ts = csvread(ts_file);
+
+disp(sprintf('Synchronizing %s and %s using mask %s for ISC analysis', fmri_file, ts_file, mask_file));
+fsz = size(f1.img);
+msz = size(f2.img);
+if ((fsz(1) ~= msz(1)) | (fsz(2) ~= msz(2)) | (fsz(3) ~= msz(3)))
+    % disp(sprintf('Image and roi sizes dont match. Image size %d %d %d, roi size %d %d %d\n',  fsz(1), fsz(2), fsz(3), msz(1), msz(2), msz(3)));
+    exit(-1);
+end
+if (size(ts, 1) < fsz(4))
+    disp(sprintf('Size of time series and fMRI data dont match. fMRI size %d, timeseries size %d\n', fsz(4), size(ts, 1)));
+    exit(-1);
+end
+ts = ts(1:fsz(4),:);
+
+f3 = f2;
+f3.dime.datatype = 16; % float32
+
+fmri_data = double(reshape(f1.img, fsz(1)*fsz(2)*fsz(3), fsz(4))');
+mask_data = int32(reshape(f2.img, fsz(1)*fsz(2)*fsz(3), 1));
+
+disp(sprintf('ROI, maxlag, max_corr, vox_x, vox_y, vox_z'));
+roi = 1; 
+inds = find(mask_data == roi);
+while length(inds > 0)
+    maxcorr = -1; mxlag = 0; mxind = 0; img = zeros(fsz(1)*fsz(2)*fsz(3), 1);
+    for lag = -1*maxlag:maxlag
+        if (lag >= 0)
+            ts1 = ts(1:end-lag, roi);
+            data = fmri_data(1+lag:end, inds);
+        else
+            ts1 = ts((-1*lag + 1):end, roi);
+            data = fmri_data(1:end+lag, inds);
+        end
+        ts1 = ts1 - mean(ts1);
+	data = data - mean(data);
+        ts1 = ts1 / sqrt(ts1' * ts1);
+	data = data ./ repmat(sqrt(sum(data .* data)), size(data, 1), 1);
+        c = data'*ts1;
+	[mx imx] = max(c);
+        if (mx > maxcorr)
+            maxcorr = mx;
+            mxlag = lag;
+            mxind = inds(imx);
+            img(inds) = c;
+        end
+    end
+    vx = rem((mxind - 1), fsz(1));
+    vy = rem(((mxind - 1 - vx) / fsz(1)),  fsz(2));
+    vz = rem(((mxind - 1 - vx - vy * fsz(1)) / fsz(1) / fsz(2)), fsz(3));
+
+    disp(sprintf('%d, %d, %g, %d, %d, %d', roi, mxlag, maxcorr, vx, vy, vz));
+    f3.img = img;
+    save_untouch_nii(f3, sprintf('%s_roi%d', output_prefix, roi));
+    roi=roi+1;
+    inds = find(mask_data == roi);
+end
+
+
+
+
