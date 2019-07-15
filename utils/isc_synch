@@ -3,9 +3,9 @@
 # printf ("Hello, world!\n");
 
 if (nargin ~= 5)
-    disp(sprintf("Usage: %s <fmri_file> <timeseries.csv> <mask> <maxlag> <output_prefix>\n", program_name ()));
-    disp('Finds the best lag within +/- <maxlag> for each ROI in the <mask> with the corresponding time series in the <timeseries.csv>');
-    exit(1);
+    disp(sprintf("Usage: %s <fmri_file> <timeseries.csv> <mask> <maxlag> <output_prefix>", program_name ()));
+    disp(sprintf('Finds the best lag within +/- <maxlag> for each ROI in the <mask> with the corresponding time series in the <timeseries.csv>\nAlso creates the correlation map files for each ROI for the best lag'));
+    return;
 end
 
 if exist('~/.octaverc')
@@ -22,42 +22,45 @@ output_prefix = arg_list{5};
 
 if (~exist(fmri_file))
     disp(sprintf('Input file %s does not exist. Exiting..\n', fmri_file));
-    exit(-1);
+    return;
 end
 
 if (~exist(mask_file))
     disp(sprintf('Input file %s does not exist. Exiting..\n', mask_file));
-    exit(-1);
+    return;
 end
 if (~exist(ts_file))
     disp(sprintf('Input file %s does not exist. Exiting..\n', ts_file));
-    exit(-1);
+    return;
 end
 
 f1 = load_untouch_nii(fmri_file);
 f2 = load_untouch_nii(mask_file);
 ts = csvread(ts_file);
 
-disp(sprintf('Synchronizing %s and %s using mask %s for ISC analysis', fmri_file, ts_file, mask_file));
+% disp(sprintf('Synchronizing %s and %s using mask %s for ISC analysis', fmri_file, ts_file, mask_file));
 fsz = size(f1.img);
 msz = size(f2.img);
 if ((fsz(1) ~= msz(1)) | (fsz(2) ~= msz(2)) | (fsz(3) ~= msz(3)))
     % disp(sprintf('Image and roi sizes dont match. Image size %d %d %d, roi size %d %d %d\n',  fsz(1), fsz(2), fsz(3), msz(1), msz(2), msz(3)));
-    exit(-1);
+    return;
 end
 if (size(ts, 1) < fsz(4))
-    disp(sprintf('Size of time series and fMRI data dont match. fMRI size %d, timeseries size %d\n', fsz(4), size(ts, 1)));
-    exit(-1);
+    % disp(sprintf('Warning: size of time series and fMRI data dont match. fMRI size %d, timeseries size %d\n', fsz(4), size(ts, 1)));
+    ntp = size(ts, 1);
+else
+    ntp = fsz(4);
 end
-ts = ts(1:fsz(4),:);
+ts = ts(1:ntp,:);
 
 f3 = f2;
 f3.dime.datatype = 16; % float32
 
 fmri_data = double(reshape(f1.img, fsz(1)*fsz(2)*fsz(3), fsz(4))');
+fmri_data = fmri_data(1:ntp, :);
 mask_data = int32(reshape(f2.img, fsz(1)*fsz(2)*fsz(3), 1));
 
-disp(sprintf('ROI, maxlag, max_corr, vox_x, vox_y, vox_z'));
+disp(sprintf('filename, timeseries, mask, ROI, maxlag, max_corr, vox_x, vox_y, vox_z'));
 roi = 1; 
 inds = find(mask_data == roi);
 while length(inds > 0)
@@ -86,13 +89,14 @@ while length(inds > 0)
     vx = rem((mxind - 1), fsz(1));
     vy = rem(((mxind - 1 - vx) / fsz(1)),  fsz(2));
     vz = rem(((mxind - 1 - vx - vy * fsz(1)) / fsz(1) / fsz(2)), fsz(3));
-
-    disp(sprintf('%d, %d, %g, %d, %d, %d', roi, mxlag, maxcorr, vx, vy, vz));
+    
+    disp(sprintf('%s, %s, %s, %d, %d, %g, %d, %d, %d', fmri_file, ts_file, mask_file, roi, mxlag, maxcorr, vx, vy, vz));
     f3.img = img;
     save_untouch_nii(f3, sprintf('%s_roi%d', output_prefix, roi));
     roi=roi+1;
     inds = find(mask_data == roi);
 end
+[msd id] = lastwarn ()
 
 
 

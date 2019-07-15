@@ -4,7 +4,7 @@
 
 if (nargin ~= 3)
     disp(sprintf("Usage: %s <audio file> <tr (msecs)> <output file>\n", program_name ()));
-    exit(-1);
+    return;
 end
 
 if exist('~/.octaverc')
@@ -20,7 +20,7 @@ output_file = arg_list{3};
 
 if (~exist(audio_file))
     disp(sprintf('Input file %s does not exist. Exiting..\n', audio_file));
-    exit(-1);
+    return;
 end
 [y, fs] = audioread (audio_file);
 nframes = length(y)/fs*1000/tr;
