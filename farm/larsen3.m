@@ -1,15 +1,41 @@
 % Change Log
-% L1 norm(b) changed everywhere to L1 norm(b(A))
-% Implemented correction equations
-% Bug in Line 56 Fixed. When the matrix became ill-conditioned the index
-% was dropped and next iteration of loop was executed.
-% Now after dropping the index, the Gram matrix is recomputed and the same 
-% loop iteration is executed with the changed inactive set and updating 
-% b(A) for same active set as in the previous iteration.
+% 1. The max is to be take over inactive set. I inserted in the following
+%    line: temp = [(c(I) - cmax) ./ (cd(I) - cmax); (c(I) + cmax) ./ (cd(I) + cmax)];
+%
+% 2. Exact comutation of G using G_array = X(:,A)' * (y - mu) ./ sb / a2;
+%
+% 3. Sanity check for gradients using if ((max(G_array) - min(G_array)) / max(G_array) > 1e-5)
+%
+% 4. If LassoCond becomes true, then active set should be updated only if we
+%    go into the next iteration, else it will interfere with the trimming at the end of the interation.
+%    The active set update moved to the beginning of the loop.
+% 
+% 5. Final bug: In the last step while trimming for exact g value, the sg
+%    computed is incorrect if the lassoCond became true in the last
+%    iteration. sg computation should take care of lassoCond and get
+%    previous sign for the beta (b) which has just become zero. Fixed this
+%    and the code now works correctly. 
+%
+% 6. Another bug found. In the following for computing gamma_tilde replaced end-1 with end. The correct one is given below
+%    gamma_tilde = b(A(1: end)) ./ (b(A(1: end)) - b_OLS(1: end, 1));
+%
+% Usage:  [b, g_out, steps] = larsen(flat_mri, model_index, g, max_l1, min_l2, max_ss, max_steps)
+%
+% 7. Another bug (actually not a bug but improvement) in the original lasso algorithm: If the matrix of active set becomes close to singular
+%    then the algorithm becomes numerically unstable and sometimes give incorrect results. Fixed this by adding the following condition  
+%    if (cond(Gram) > 1e2) then skip the current variable and remove it from inactive set. This is a topic for further research.
+%    Now the algorithm is robust and gives good results and is also fast.
+%
+% 8. Bug in Line 56 Fixed. When the matrix became ill-conditioned the index
+%    was dropped and next iteration of loop was executed.
+%    Now after dropping the index, the Gram matrix is recomputed and the same 
+%    loop iteration is executed with the changed inactive set and updating 
+%    b(A) for same active set as in the previous iteration.
+%
+% 9. Added functionality for cross-validation. k1 and k2 are start and end
+%    indices of train set respectively, k3 and k4 are start and end indices 
+%    for cross-validation set respectively.
 
-% Added functionality for cross-validation. k1 and k2 are start and end
-% indices of train set respectively, k3 and k4 are start and end indices 
-% for cross-validation set respectively.
 function [b, l1_out, err_out, g_out, step,test_err,train_err] = larsen(flat_mri, model_index, max_l1, min_l2, g, max_ss, max_steps,k1,k2,k3,k4)
 
 if nargin <= 7 %if set indices not provides,run without cross-validation
