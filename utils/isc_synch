@@ -1,4 +1,4 @@
-#! /usr/bin/octave -qf
+#! /usr/bin/octave -qf --no-gui
 # a sample Octave program
 # printf ("Hello, world!\n");
 
