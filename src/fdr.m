@@ -6,7 +6,7 @@ function fdr(p_file,t_file,mask_file, out_file_path)
 % Creates a fdr corrected file with -log(q-values)(to the base 10) using the <input file> which contains -log(p-values) (to the base 10) for the voxels 
 % (negative values are permitted and signs are copied onto output q-values). 
 % If no mask or threshold is specified then only the non-zero voxels in the input are considered for testing, others are ignored. 
-% In case mast file is specified, voxels with non-zero values in the mask file are used for testing. 
+% In case mask file is specified, voxels with non-zero values in the mask file are used for testing. 
 % In case the <input file> contains multiple volumes, all the volumes are assumed to be p-values and are converted to q-values if --vol option is not given. 
 % If --vol option is used then only the specified <volume number> is converted from p-values to q-values, the rest of the volumes are copied to the output.
 %%FDR correction
